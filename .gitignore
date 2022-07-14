@@ -1,2 +1,4 @@
-front/node_modules/
+frontend/node_modules/
+frontend/.nuxt/
 map/
+temp_files/
