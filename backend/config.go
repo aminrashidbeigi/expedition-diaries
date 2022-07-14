@@ -13,7 +13,7 @@ func GetDB() *gorm.DB {
 	}
 
 	// Migrate the schema
-	db.AutoMigrate(&Travel{})
+	db.AutoMigrate(&Travel{}, &Resource{})
 
 	return db
 
