@@ -7,7 +7,7 @@ require (
 	github.com/lib/pq v1.10.4
 	go.mongodb.org/mongo-driver v1.8.4
 	gorm.io/driver/sqlite v1.3.1
-	gorm.io/gorm v1.23.3
+	gorm.io/gorm v1.23.8
 )
 
 require (
