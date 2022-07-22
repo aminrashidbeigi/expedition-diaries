@@ -1,0 +1,7 @@
+version: 1
+packages:
+  - path: "historytraveler"
+    name: "historytraveler"
+    engine: "postgresql"
+    schema: "schema.sql"
+    queries: "query.sql"
