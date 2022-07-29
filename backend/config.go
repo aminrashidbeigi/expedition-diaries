@@ -1,20 +1,20 @@
 package main
 
 import (
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
+	"database/sql"
+
+	"example.com/history-travelers/storage/queries"
+	_ "github.com/lib/pq"
 )
 
-func GetDB() *gorm.DB {
-	dbName := "history-travelers.db"
-	db, err := gorm.Open(sqlite.Open(dbName), &gorm.Config{})
+func GetQueries() (*queries.Queries, error) {
+	db, err := sql.Open("postgres", "user=postgres dbname=travels")
 	if err != nil {
-		panic("failed to connect database")
+		return nil, err
 	}
-
-	// Migrate the schema
-	db.AutoMigrate(&Travel{}, &Traveler{}, &Country{}, &Resource{})
-
-	return db
-
+	queries_storage := queries.New(db)
+	if err != nil {
+		return nil, err
+	}
+	return queries_storage, nil
 }
