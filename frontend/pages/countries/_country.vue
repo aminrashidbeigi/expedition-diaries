@@ -5,21 +5,39 @@
       <NuxtLogo/>
       <div class="mt-8 bg-white overflow-hidden shadow sm:rounded-lg p-6">
         <h2 class="text-2xl leading-7 font-semibold">
-          {{ country.Name }}
+          {{ countryTravels.Country.Name }}
         </h2>
         <div class="mt-4 pt-4 text-gray-800 border-t border-dashed">
-          <t-table
-            :headers="['Traveler', 'Email', 'Age', 'Sales']"
-            :data="[
-              ['Alfonso Bribiesca', 'alfonso@vexilo.com', '31', '$9,999.00'],
-              ['Saida Redondo', 'saida@gmail.com', 27, '$124.00'],
-            ]"
-          ></t-table>
+          <h1>Travels</h1>
+          <div v-for="travel in countryTravels.Travels">
+            <h2>
+              Resources:
+              <div v-for="resource in travel.Resources">
+                <p>title: {{resource.Title}}</p>
+                <p>link: <a :href="resource.Link">Wiki</a></p>
+                <p><img :src="resource.Image"></p>
+              </div>
+              Travelers:
+              <div v-for="traveler in travel.Travelers">
+                <p>name: {{traveler.Name}}</p>
+                <p>link: <a :href="traveler.Link">Wiki</a></p>
+              </div>
+              Countries of this travel:
+              <div v-for="country in travel.Countries">
+                <p>{{country.Name}}, </p>
+              </div>
+               
+            </h2>
+          </div>
         </div>
-        <p class="mt-4 pt-4 text-gray-800 border-t border-dashed">
-          To get started, remove <code class="bg-gray-100 text-sm p-1 rounded border">components/Tutorial.vue</code> and start coding in <code class="bg-gray-100 text-sm p-1 rounded border">pages/index.vue</code>. Have fun!
-        </p>
       </div>
+
+
+
+
+
+
+
       <div class="flex justify-center pt-4 space-x-2">
         <a href="https://github.com/nuxt/nuxt.js" target="_blank"><svg
           class="w-6 h-6 text-gray-600 hover:text-gray-800 button--github"
@@ -52,9 +70,9 @@
 import NuxtLogo from '../../components/NuxtLogo.vue'
   export default {
     async asyncData({ params, $axios }) {
-      const country = await $axios.$get('http://localhost:8080/countries/' + params.country)
+      const countryTravels = await $axios.$get('http://localhost:8080/country-travels/' + params.country)
       //const country = params.country // When calling /abc the slug will be "abc"
-      return { country }
+      return { countryTravels }
     },
     components: {
       NuxtLogo

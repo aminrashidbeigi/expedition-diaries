@@ -52,6 +52,11 @@ type Travel struct {
 	Countries []Country
 }
 
+type CountryTravels struct {
+	Country Country
+	Travels []Travel
+}
+
 func (r Router) getCountryTravelsByCode(c *gin.Context) {
 	code := c.Param("code")
 	code = strings.ToUpper(code)
@@ -61,10 +66,14 @@ func (r Router) getCountryTravelsByCode(c *gin.Context) {
 		return
 	}
 
-	_, err := r.queries.GetCountryByCode(c, code)
+	countryRecord, err := r.queries.GetCountryByCode(c, code)
 	if err != nil {
 		c.IndentedJSON(http.StatusNotFound, "Country code not found.")
 		return
+	}
+	country := Country{
+		Name: countryRecord.Name,
+		Code: countryRecord.Code,
 	}
 
 	var travels []Travel
@@ -95,7 +104,7 @@ func (r Router) getCountryTravelsByCode(c *gin.Context) {
 		})
 	}
 
-	c.IndentedJSON(http.StatusOK, travels)
+	c.IndentedJSON(http.StatusOK, CountryTravels{Country: country, Travels: travels})
 }
 
 func (r Router) getCountries(c *gin.Context) {
