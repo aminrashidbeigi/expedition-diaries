@@ -1,20 +1,20 @@
 CREATE TABLE countries (
     id serial PRIMARY KEY,
-    code varchar(2) NOT NULL,
-    name text NOT NULL
+    code varchar(2) NOT NULL UNIQUE,
+    name text NOT NULL UNIQUE
 );
 
 CREATE TABLE resources (  
     id serial PRIMARY KEY,
-    title text NOT NULL,
-    link text,
-    image text
+    title text NOT NULL UNIQUE,
+    link text NOT NULL,
+    image text NOT NULL
 );
 
 CREATE TABLE travelers (
     id serial PRIMARY KEY,
-    name text NOT NULL,
-    link text
+    name text NOT NULL UNIQUE,
+    link text NOT NULL
 );
 
 CREATE TABLE travels (
