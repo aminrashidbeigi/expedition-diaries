@@ -33,7 +33,7 @@ func main() {
 		queries: queries,
 	}
 	router := gin.Default()
-	router.GET("/countries/:code", api.getCountryByCode)
+	router.GET("/country-travels/:code", api.getCountryTravelsByCode)
 	router.GET("/countries", api.getCountries)
 	router.POST("/add-resource", api.addResource)
 	router.POST("/add-traveler", api.addTraveler)

@@ -52,7 +52,7 @@
 import NuxtLogo from '../../components/NuxtLogo.vue'
   export default {
     async asyncData({ params, $axios }) {
-      const country = await $axios.$get('http://localhost:8080/countries/ir')
+      const country = await $axios.$get('http://localhost:8080/countries/' + params.country)
       //const country = params.country // When calling /abc the slug will be "abc"
       return { country }
     },

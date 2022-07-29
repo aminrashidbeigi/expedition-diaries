@@ -3,3 +3,4 @@ frontend/.nuxt/
 temp_files/
 map/
 .vscode
+frontend/yarn-error.log
