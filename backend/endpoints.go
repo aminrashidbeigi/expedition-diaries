@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
 
+	"example.com/history-travelers/storage"
 	"example.com/history-travelers/storage/queries"
 	"github.com/gin-gonic/gin"
 )
@@ -14,6 +16,9 @@ type Router struct {
 }
 
 type AddTravelInput struct {
+	Title     string   `json:"title" binding:"required"`
+	StartedAt string   `json:"started_at"`
+	EndedAt   string   `json:"ended_at"`
 	Travelers []int    `json:"travelers" binding:"required"`
 	Resources []int    `json:"resources" binding:"required"`
 	Countries []string `json:"countries" binding:"required"`
@@ -59,7 +64,7 @@ type CountryTravels struct {
 
 func (r Router) getCountryTravelsByCode(c *gin.Context) {
 	code := c.Param("code")
-	code = strings.ToUpper(code)
+	code = strings.ToLower(code)
 	if len(code) != 2 {
 		log.Println("Bad request")
 		c.IndentedJSON(http.StatusBadRequest, "Country code not found. it should be 2 letters.")
@@ -161,15 +166,31 @@ func (r Router) addResource(c *gin.Context) {
 func (r Router) addTravel(c *gin.Context) {
 	var input AddTravelInput
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, "Input is wrong")
+		c.IndentedJSON(http.StatusBadRequest, fmt.Sprintf("Input is wrong: %v", err))
 		return
 	}
 
-	travel, err := r.queries.CreateTravel(c)
+	travel, err := r.queries.GetTravelByTitle(c, input.Title)
 	if err != nil {
-		log.Println("this is error: ", err)
-		c.IndentedJSON(http.StatusInternalServerError, "could not create travel.")
+		c.IndentedJSON(http.StatusInternalServerError, "could get create travel.")
 		return
+	}
+	travelExistsAlready := false
+	if travel.Title == input.Title {
+		travelExistsAlready = true
+	}
+
+	if !travelExistsAlready {
+		travel, err = r.queries.CreateTravel(c, queries.CreateTravelParams{
+			Title:     input.Title,
+			StartedAt: input.StartedAt,
+			EndedAt:   input.EndedAt,
+		})
+		if err != nil && !storage.IsNoRowError(err) {
+			log.Println("this is error: ", err)
+			c.IndentedJSON(http.StatusInternalServerError, "could not create travel.")
+			return
+		}
 	}
 
 	for _, countryInput := range input.Countries {
@@ -179,10 +200,10 @@ func (r Router) addTravel(c *gin.Context) {
 			return
 		}
 		_, err = r.queries.CreateTravelCountry(c, queries.CreateTravelCountryParams{
-			TravelID:  travel,
+			TravelID:  travel.ID,
 			CountryID: country.ID,
 		})
-		if err != nil {
+		if err != nil && !storage.IsNoRowError(err) {
 			log.Println("this is error: ", err)
 			c.IndentedJSON(http.StatusInternalServerError, "could not get country by id.")
 			return
@@ -191,10 +212,10 @@ func (r Router) addTravel(c *gin.Context) {
 
 	for _, resourceInput := range input.Resources {
 		_, err = r.queries.CreateTravelResource(c, queries.CreateTravelResourceParams{
-			TravelID:   travel,
+			TravelID:   travel.ID,
 			ResourceID: int32(resourceInput),
 		})
-		if err != nil {
+		if err != nil && !storage.IsNoRowError(err) {
 			log.Println("this is error: ", err)
 			c.IndentedJSON(http.StatusInternalServerError, "could not get resource by id.")
 			return
@@ -203,10 +224,10 @@ func (r Router) addTravel(c *gin.Context) {
 
 	for _, travelerInput := range input.Travelers {
 		_, err = r.queries.CreateTravelTraveler(c, queries.CreateTravelTravelerParams{
-			TravelID:   travel,
+			TravelID:   travel.ID,
 			TravelerID: int32(travelerInput),
 		})
-		if err != nil {
+		if err != nil && !storage.IsNoRowError(err) {
 			log.Println("this is error: ", err)
 			c.IndentedJSON(http.StatusInternalServerError, "could not get traveler by id.")
 			return

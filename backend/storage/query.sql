@@ -59,23 +59,32 @@ WHERE travels.id = $1;
 
 
 -- name: CreateTravel :one
-INSERT INTO travels DEFAULT VALUES RETURNING *;
+INSERT INTO travels (
+  title, started_at, ended_at
+) VALUES (
+  $1, $2, $3
+) 
+ON CONFLICT DO NOTHING RETURNING *;
+
+-- name: GetTravelByTitle :one
+SELECT * FROM travels
+WHERE title = $1 LIMIT 1;
 
 -- name: CreateTravelCountry :one
 INSERT INTO travel_countries (
   travel_id, country_id
 ) VALUES (
   $1, $2
-)
-RETURNING *;
+) 
+ON CONFLICT DO NOTHING RETURNING *;
 
 -- name: CreateTravelTraveler :one
 INSERT INTO travel_travelers (
   travel_id, traveler_id
 ) VALUES (
   $1, $2
-)
-RETURNING *;
+) 
+ON CONFLICT DO NOTHING RETURNING *;
 
 -- name: CreateTravelResource :one
 INSERT INTO travel_resources (
@@ -83,4 +92,4 @@ INSERT INTO travel_resources (
 ) VALUES (
   $1, $2
 )
-RETURNING *;
+ON CONFLICT DO NOTHING RETURNING *;

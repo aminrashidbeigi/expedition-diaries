@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	queries, err := GetQueries()
+	queries, err := storage.GetQueries()
 
 	if err != nil {
 		log.Fatal(err)
@@ -25,8 +25,7 @@ func main() {
 	}
 
 	if *seed {
-		seeder := Seeder{queries: queries}
-		seeder.SeedCountries()
+		storage.SeedCountries()
 		fmt.Println("Database seeded with countries")
 	}
 	api := Router{

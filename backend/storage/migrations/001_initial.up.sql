@@ -18,7 +18,10 @@ CREATE TABLE travelers (
 );
 
 CREATE TABLE travels (
-    id serial PRIMARY KEY
+    id serial PRIMARY KEY,
+    title text NOT NULL UNIQUE,
+    started_at varchar(4) NOT NULL,
+    ended_at varchar(4) NOT NULL
 );
 
 CREATE TABLE travel_countries (

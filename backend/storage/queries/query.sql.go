@@ -58,14 +58,30 @@ func (q *Queries) CreateResource(ctx context.Context, arg CreateResourceParams) 
 }
 
 const createTravel = `-- name: CreateTravel :one
-INSERT INTO travels DEFAULT VALUES RETURNING id
+INSERT INTO travels (
+  title, started_at, ended_at
+) VALUES (
+  $1, $2, $3
+) 
+ON CONFLICT DO NOTHING RETURNING id, title, started_at, ended_at
 `
 
-func (q *Queries) CreateTravel(ctx context.Context) (int32, error) {
-	row := q.db.QueryRowContext(ctx, createTravel)
-	var id int32
-	err := row.Scan(&id)
-	return id, err
+type CreateTravelParams struct {
+	Title     string
+	StartedAt string
+	EndedAt   string
+}
+
+func (q *Queries) CreateTravel(ctx context.Context, arg CreateTravelParams) (Travel, error) {
+	row := q.db.QueryRowContext(ctx, createTravel, arg.Title, arg.StartedAt, arg.EndedAt)
+	var i Travel
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.StartedAt,
+		&i.EndedAt,
+	)
+	return i, err
 }
 
 const createTravelCountry = `-- name: CreateTravelCountry :one
@@ -73,8 +89,8 @@ INSERT INTO travel_countries (
   travel_id, country_id
 ) VALUES (
   $1, $2
-)
-RETURNING travel_id, country_id
+) 
+ON CONFLICT DO NOTHING RETURNING travel_id, country_id
 `
 
 type CreateTravelCountryParams struct {
@@ -95,7 +111,7 @@ INSERT INTO travel_resources (
 ) VALUES (
   $1, $2
 )
-RETURNING travel_id, resource_id
+ON CONFLICT DO NOTHING RETURNING travel_id, resource_id
 `
 
 type CreateTravelResourceParams struct {
@@ -115,8 +131,8 @@ INSERT INTO travel_travelers (
   travel_id, traveler_id
 ) VALUES (
   $1, $2
-)
-RETURNING travel_id, traveler_id
+) 
+ON CONFLICT DO NOTHING RETURNING travel_id, traveler_id
 `
 
 type CreateTravelTravelerParams struct {
@@ -180,7 +196,7 @@ func (q *Queries) GetCountries(ctx context.Context) ([]Country, error) {
 }
 
 const getCountriesByTravelID = `-- name: GetCountriesByTravelID :many
-SELECT countries.id, code, name, travel_id, country_id, travels.id FROM countries
+SELECT countries.id, code, name, travel_id, country_id, travels.id, title, started_at, ended_at FROM countries
 INNER JOIN travel_countries on countries.id = travel_countries.country_id
 INNER JOIN travels on travel_countries.travel_id = travels.id
 WHERE travels.id = $1
@@ -193,6 +209,9 @@ type GetCountriesByTravelIDRow struct {
 	TravelID  int32
 	CountryID int32
 	ID_2      int32
+	Title     string
+	StartedAt string
+	EndedAt   string
 }
 
 func (q *Queries) GetCountriesByTravelID(ctx context.Context, id int32) ([]GetCountriesByTravelIDRow, error) {
@@ -211,6 +230,9 @@ func (q *Queries) GetCountriesByTravelID(ctx context.Context, id int32) ([]GetCo
 			&i.TravelID,
 			&i.CountryID,
 			&i.ID_2,
+			&i.Title,
+			&i.StartedAt,
+			&i.EndedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -238,7 +260,7 @@ func (q *Queries) GetCountryByCode(ctx context.Context, code string) (Country, e
 }
 
 const getResourcesByTravelID = `-- name: GetResourcesByTravelID :many
-SELECT resources.id, title, link, image, travel_id, resource_id, travels.id FROM resources
+SELECT resources.id, resources.title, link, image, travel_id, resource_id, travels.id, travels.title, started_at, ended_at FROM resources
 INNER JOIN travel_resources on travel_resources.resource_id = resources.id
 INNER JOIN travels on travels.id = travel_resources.travel_id
 WHERE travels.id = $1
@@ -252,6 +274,9 @@ type GetResourcesByTravelIDRow struct {
 	TravelID   int32
 	ResourceID int32
 	ID_2       int32
+	Title_2    string
+	StartedAt  string
+	EndedAt    string
 }
 
 func (q *Queries) GetResourcesByTravelID(ctx context.Context, id int32) ([]GetResourcesByTravelIDRow, error) {
@@ -271,6 +296,9 @@ func (q *Queries) GetResourcesByTravelID(ctx context.Context, id int32) ([]GetRe
 			&i.TravelID,
 			&i.ResourceID,
 			&i.ID_2,
+			&i.Title_2,
+			&i.StartedAt,
+			&i.EndedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -285,8 +313,25 @@ func (q *Queries) GetResourcesByTravelID(ctx context.Context, id int32) ([]GetRe
 	return items, nil
 }
 
+const getTravelByTitle = `-- name: GetTravelByTitle :one
+SELECT id, title, started_at, ended_at FROM travels
+WHERE title = $1 LIMIT 1
+`
+
+func (q *Queries) GetTravelByTitle(ctx context.Context, title string) (Travel, error) {
+	row := q.db.QueryRowContext(ctx, getTravelByTitle, title)
+	var i Travel
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.StartedAt,
+		&i.EndedAt,
+	)
+	return i, err
+}
+
 const getTravelersByTravelID = `-- name: GetTravelersByTravelID :many
-SELECT travelers.id, name, link, travel_id, traveler_id, travels.id FROM travelers
+SELECT travelers.id, name, link, travel_id, traveler_id, travels.id, title, started_at, ended_at FROM travelers
 INNER JOIN travel_travelers on travelers.id = travel_travelers.traveler_id
 INNER JOIN travels on travel_travelers.travel_id = travels.id
 WHERE travels.id = $1
@@ -299,6 +344,9 @@ type GetTravelersByTravelIDRow struct {
 	TravelID   int32
 	TravelerID int32
 	ID_2       int32
+	Title      string
+	StartedAt  string
+	EndedAt    string
 }
 
 func (q *Queries) GetTravelersByTravelID(ctx context.Context, id int32) ([]GetTravelersByTravelIDRow, error) {
@@ -317,6 +365,9 @@ func (q *Queries) GetTravelersByTravelID(ctx context.Context, id int32) ([]GetTr
 			&i.TravelID,
 			&i.TravelerID,
 			&i.ID_2,
+			&i.Title,
+			&i.StartedAt,
+			&i.EndedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -332,7 +383,7 @@ func (q *Queries) GetTravelersByTravelID(ctx context.Context, id int32) ([]GetTr
 }
 
 const getTravlesByCountryCode = `-- name: GetTravlesByCountryCode :many
-SELECT travels.id, travel_id, country_id, countries.id, code, name FROM travels
+SELECT travels.id, title, started_at, ended_at, travel_id, country_id, countries.id, code, name FROM travels
 INNER JOIN travel_countries on travels.id = travel_countries.travel_id
 INNER JOIN countries on travel_countries.country_id = countries.id
 WHERE countries.code = $1
@@ -340,6 +391,9 @@ WHERE countries.code = $1
 
 type GetTravlesByCountryCodeRow struct {
 	ID        int32
+	Title     string
+	StartedAt string
+	EndedAt   string
 	TravelID  int32
 	CountryID int32
 	ID_2      int32
@@ -358,6 +412,9 @@ func (q *Queries) GetTravlesByCountryCode(ctx context.Context, code string) ([]G
 		var i GetTravlesByCountryCodeRow
 		if err := rows.Scan(
 			&i.ID,
+			&i.Title,
+			&i.StartedAt,
+			&i.EndedAt,
 			&i.TravelID,
 			&i.CountryID,
 			&i.ID_2,

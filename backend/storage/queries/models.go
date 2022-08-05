@@ -20,7 +20,10 @@ type Resource struct {
 }
 
 type Travel struct {
-	ID int32
+	ID        int32
+	Title     string
+	StartedAt string
+	EndedAt   string
 }
 
 type TravelCountry struct {
