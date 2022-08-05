@@ -171,7 +171,7 @@ func (r Router) addTravel(c *gin.Context) {
 	}
 
 	travel, err := r.queries.GetTravelByTitle(c, input.Title)
-	if err != nil {
+	if err != nil && !storage.IsNoRowError(err) {
 		c.IndentedJSON(http.StatusInternalServerError, "could get create travel.")
 		return
 	}

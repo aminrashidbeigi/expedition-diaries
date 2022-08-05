@@ -1,5 +1,5 @@
 <template>
-  <article>
+	<article>
 		<div class="examples__block__map">
 			<svg-map
 				:map="World"
@@ -11,10 +11,10 @@
 				@blur="blurLocation"
 				@click="clickLocation"
 			/>
-      <div
+			<div
 				class="examples__block__map__tooltip"
 				:style="tooltipStyle"
-			>
+				>
 				{{ pointedLocation }}
 			</div>
 		</div>

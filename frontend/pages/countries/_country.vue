@@ -8,6 +8,11 @@
           {{ countryTravels.Country.Name }} Travels
         </h2>
         <div class="mt-4 pt-4 text-gray-800 border-t border-dashed">
+          <div v-if="!countryTravels.Travels">
+            No travel found for {{ countryTravels.Country.Name }}.
+            <br>
+            Help us by <a href="/add-travel">suggesting a trip</a> :)
+          </div>
           <div v-for="travel in countryTravels.Travels">
             <h2 class="font-bold">📖 Resources</h2>
             <div v-for="resource in travel.Resources">
@@ -49,6 +54,13 @@ import Header from '../../components/Header.vue'
 import Footer from '../../components/Footer.vue'
 
 export default {
+  data: {
+    countryTravels: {
+      Country: "",
+      Travels: {}
+    },
+    travels: {}
+  },
   components: {
     Header,
     Footer,

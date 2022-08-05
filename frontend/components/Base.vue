@@ -8,8 +8,10 @@
           Welcome to history travelers!
         </h2>
         <p class="mt-3 text-gray-600">
-        Select your favorite country to check it's history travelers :)
+        Select your favorite country to check it's history travelers.
         </p>
+        <p class="text-gray-600">
+          Help us by <a href="/add-travel">suggesting a trip</a> :)</p>
         <div class="mt-4 pt-4 text-gray-800 border-t border-dashed">
           <Map/>
         </div>
