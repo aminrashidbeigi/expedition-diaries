@@ -73,10 +73,13 @@ func SeedCountries() {
 					code = field
 				}
 			}
-			query_storage.CreateCountry(ctx, queries.CreateCountryParams{
+			_, err := query_storage.CreateCountry(ctx, queries.CreateCountryParams{
 				Name: name,
 				Code: strings.ToLower(code),
 			})
+			if err != nil {
+				log.Printf("can not create country: %v", err)
+			}
 		}
 	}
 }
