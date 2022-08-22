@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log"
 
+	"example.com/history-travelers/middlewares"
 	"example.com/history-travelers/storage"
+	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 )
 
@@ -32,12 +34,30 @@ func main() {
 		queries: queries,
 	}
 	router := gin.Default()
+
+	authMiddleware, err := middlewares.AuthMiddleware()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	router.NoRoute(authMiddleware.MiddlewareFunc(), func(c *gin.Context) {
+		claims := jwt.ExtractClaims(c)
+		log.Printf("NoRoute claims: %#v\n", claims)
+		c.JSON(404, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
+	})
+
+	auth := router.Group("/auth")
+	auth.POST("/login", authMiddleware.LoginHandler)
+	auth.GET("/refresh_token", authMiddleware.RefreshHandler)
+
 	router.GET("/country-travels/:code", api.getCountryTravelsByCode)
 	router.GET("/countries", api.getCountries)
-	router.POST("/add-resource", api.addResource)
-	router.POST("/add-traveler", api.addTraveler)
-	router.POST("/add-travel", api.addTravel)
-
+	router.Use(authMiddleware.MiddlewareFunc())
+	{
+		router.POST("/add-resource", api.addResource)
+		router.POST("/add-traveler", api.addTraveler)
+		router.POST("/add-travel", api.addTravel)
+	}
 	err = router.Run("localhost:8080")
 	if err != nil {
 		log.Fatal(err)
