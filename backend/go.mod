@@ -1,4 +1,4 @@
-module example.com/history-travelers
+module github.com/aminrashidbeigi/history-travels
 
 go 1.18
 

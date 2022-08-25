@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 
-	"example.com/history-travelers/middlewares"
-	"example.com/history-travelers/storage"
+	"github.com/aminrashidbeigi/history-travels/middlewares"
+	"github.com/aminrashidbeigi/history-travels/storage"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 )

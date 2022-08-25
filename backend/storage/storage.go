@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"example.com/history-travelers/storage/queries"
+	"github.com/aminrashidbeigi/history-travels/storage/queries"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
