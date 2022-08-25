@@ -25,4 +25,5 @@ WORKDIR /app
 
 COPY --from=BUILDER /app  .
 
+EXPOSE 3000
 CMD [ "yarn", "start" ]

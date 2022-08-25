@@ -11,4 +11,7 @@ RUN make build
 
 FROM docker.repos.balad.ir/debian:bullseye-slim
 COPY --from=BUILDER /server/history-travels /usr/bin/history-travels
+
+EXPOSE 8080
+
 CMD [ "history-travels" ]

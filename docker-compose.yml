@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+  server:
+    container_name: golang_container
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres_db
+  
+  postgres_db:
+    container_name: postgres_container
+    image: docker.repos.balad.ir/postgres:latest
+    ports:
+      - "5432:5432"
+
+  client:
+    container_name: nuxtjs_container
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
