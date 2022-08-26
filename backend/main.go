@@ -58,7 +58,7 @@ func main() {
 		router.POST("/add-traveler", api.addTraveler)
 		router.POST("/add-travel", api.addTravel)
 	}
-	err = router.Run("localhost:8080")
+	err = router.Run(":8080")
 	if err != nil {
 		log.Fatal(err)
 	}
