@@ -66,8 +66,7 @@ export default {
     Footer,
   },
   async asyncData({ params, $axios }) {
-    const countryTravels = await $axios.$get('http://localhost:8080/country-travels/' + params.country)
-    //const country = params.country // When calling /abc the slug will be "abc"
+    const countryTravels = await $axios.$get(process.env.baseAPI + '/country-travels/' + params.country)
     return { countryTravels }
   },
 }

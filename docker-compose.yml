@@ -6,16 +6,9 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    depends_on:
-      - postgres_db
     ports:
       - "8080:8080"
-  postgres_db:
-    container_name: postgres_container
-    image: docker.repos.balad.ir/postgres:latest
-    ports:
-      - "5432:5432"
-
+    network_mode: "host"
   client:
     container_name: nuxtjs_container
     build:
