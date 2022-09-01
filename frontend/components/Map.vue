@@ -39,7 +39,7 @@ export default {
 			pointedLocation: null,
 			focusedLocation: null,
 			clickedLocation: null,
-      tooltipStyle: null,
+      		tooltipStyle: null,
 		}
 	},
 	methods: {

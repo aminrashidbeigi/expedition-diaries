@@ -16,6 +16,14 @@ export default {
     ]
   },
 
+  env: {
+    baseUrl:
+      process.env.NODE_ENV === 'dev'
+        ? 'http://localhost:3000'
+        : 'https://my-domain.com',
+    compact: true
+  },
+
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
   ],
@@ -52,6 +60,8 @@ export default {
   },
 
   server: {
-    host: "0.0.0.0"
+    host: process.env.NODE_ENV === 'dev'
+        ? '127.0.0.1'
+        : '0.0.0.0'
   }
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/aminrashidbeigi/history-travels/config"
 	"github.com/aminrashidbeigi/history-travels/middlewares"
 	"github.com/aminrashidbeigi/history-travels/storage"
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -12,14 +13,27 @@ import (
 )
 
 func main() {
+
+	seed := flag.Bool("seed", false, "This flag is for database seed")
+	migrate := flag.Bool("migrate", false, "This flag is for database migrations")
+	configFile := flag.String("config", "", "This flag is for config file path")
+	flag.Parse()
+
+	if *migrate {
+		storage.Migrate()
+		fmt.Println("Database migrated")
+	}
+
+	cfg, err := config.LoadConfig(*configFile)
+	if err != nil {
+		log.Fatalf("Couldn't load config: %v", err)
+	}
+
 	queries, err := storage.GetQueries()
 
 	if err != nil {
 		log.Fatal(err)
 	}
-	seed := flag.Bool("seed", false, "This flag is for database seed")
-	migrate := flag.Bool("migrate", false, "This flag is for database migrations")
-	flag.Parse()
 
 	if *migrate {
 		storage.Migrate()
@@ -58,7 +72,8 @@ func main() {
 		router.POST("/add-traveler", api.addTraveler)
 		router.POST("/add-travel", api.addTravel)
 	}
-	err = router.Run(":8080")
+	println(cfg.Host)
+	err = router.Run(cfg.Host + ":" + cfg.Port)
 	if err != nil {
 		log.Fatal(err)
 	}
