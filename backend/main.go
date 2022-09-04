@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"github.com/aminrashidbeigi/history-travels/config"
+	"github.com/aminrashidbeigi/history-travels/endpoints"
 	"github.com/aminrashidbeigi/history-travels/middlewares"
 	"github.com/aminrashidbeigi/history-travels/storage"
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -44,8 +45,8 @@ func main() {
 		storage.SeedCountries()
 		fmt.Println("Database seeded with countries")
 	}
-	api := Router{
-		queries: queries,
+	api := endpoints.Router{
+		Queries: queries,
 	}
 	router := gin.Default()
 
@@ -64,13 +65,13 @@ func main() {
 	auth.POST("/login", authMiddleware.LoginHandler)
 	auth.GET("/refresh_token", authMiddleware.RefreshHandler)
 
-	router.GET("/country-travels/:code", api.getCountryTravelsByCode)
-	router.GET("/countries", api.getCountries)
+	router.GET("/country-travels/:code", api.GetCountryTravelsByCode)
+	router.GET("/countries", api.GetCountries)
 	router.Use(authMiddleware.MiddlewareFunc())
 	{
-		router.POST("/add-resource", api.addResource)
-		router.POST("/add-traveler", api.addTraveler)
-		router.POST("/add-travel", api.addTravel)
+		router.POST("/add-resource", api.AddResource)
+		router.POST("/add-traveler", api.AddTraveler)
+		router.POST("/add-travel", api.AddTravel)
 	}
 	println(cfg.Host)
 	err = router.Run(cfg.Host + ":" + cfg.Port)

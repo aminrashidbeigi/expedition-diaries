@@ -1,4 +1,4 @@
-package main
+package endpoints
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 )
 
 type Router struct {
-	queries *queries.Queries
+	Queries *queries.Queries
 }
 
 type AddTravelInput struct {
@@ -62,7 +62,7 @@ type CountryTravels struct {
 	Travels []Travel
 }
 
-func (r Router) getCountryTravelsByCode(c *gin.Context) {
+func (r Router) GetCountryTravelsByCode(c *gin.Context) {
 	code := c.Param("code")
 	code = strings.ToLower(code)
 	if len(code) != 2 {
@@ -71,7 +71,7 @@ func (r Router) getCountryTravelsByCode(c *gin.Context) {
 		return
 	}
 
-	countryRecord, err := r.queries.GetCountryByCode(c, code)
+	countryRecord, err := r.Queries.GetCountryByCode(c, code)
 	if err != nil {
 		c.IndentedJSON(http.StatusNotFound, "Country code not found.")
 		return
@@ -82,22 +82,22 @@ func (r Router) getCountryTravelsByCode(c *gin.Context) {
 	}
 
 	var travels []Travel
-	countryTravels, err := r.queries.GetTravlesByCountryCode(c, code)
+	countryTravels, err := r.Queries.GetTravlesByCountryCode(c, code)
 	if err != nil {
 		return
 	}
 	for _, travel := range countryTravels {
-		travelers, err := r.queries.GetTravelersByTravelID(c, travel.ID)
+		travelers, err := r.Queries.GetTravelersByTravelID(c, travel.ID)
 		if err != nil {
 			return
 		}
 
-		resources, err := r.queries.GetResourcesByTravelID(c, travel.ID)
+		resources, err := r.Queries.GetResourcesByTravelID(c, travel.ID)
 		if err != nil {
 			return
 		}
 
-		countries, err := r.queries.GetCountriesByTravelID(c, travel.ID)
+		countries, err := r.Queries.GetCountriesByTravelID(c, travel.ID)
 		if err != nil {
 			return
 		}
@@ -112,8 +112,8 @@ func (r Router) getCountryTravelsByCode(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, CountryTravels{Country: country, Travels: travels})
 }
 
-func (r Router) getCountries(c *gin.Context) {
-	countries, err := r.queries.GetCountries(c)
+func (r Router) GetCountries(c *gin.Context) {
+	countries, err := r.Queries.GetCountries(c)
 	if err != nil {
 		log.Println("this is error: ", err)
 		c.IndentedJSON(http.StatusInternalServerError, "something bad happend.")
@@ -122,14 +122,14 @@ func (r Router) getCountries(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, countries)
 }
 
-func (r Router) addTraveler(c *gin.Context) {
+func (r Router) AddTraveler(c *gin.Context) {
 	var input AddTravelerInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, "Input is wrong")
 		return
 	}
 
-	traveler, err := r.queries.CreateTraveler(c, queries.CreateTravelerParams{
+	traveler, err := r.Queries.CreateTraveler(c, queries.CreateTravelerParams{
 		Name: input.Name,
 		Link: input.Link,
 	})
@@ -142,14 +142,14 @@ func (r Router) addTraveler(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, traveler)
 }
 
-func (r Router) addResource(c *gin.Context) {
+func (r Router) AddResource(c *gin.Context) {
 	var input AddResourceInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, "Input is wrong")
 		return
 	}
 
-	traveler, err := r.queries.CreateResource(c, queries.CreateResourceParams{
+	traveler, err := r.Queries.CreateResource(c, queries.CreateResourceParams{
 		Title: input.Title,
 		Link:  input.Link,
 		Image: input.Image,
@@ -163,14 +163,14 @@ func (r Router) addResource(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, traveler)
 }
 
-func (r Router) addTravel(c *gin.Context) {
+func (r Router) AddTravel(c *gin.Context) {
 	var input AddTravelInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, fmt.Sprintf("Input is wrong: %v", err))
 		return
 	}
 
-	travel, err := r.queries.GetTravelByTitle(c, input.Title)
+	travel, err := r.Queries.GetTravelByTitle(c, input.Title)
 	if err != nil && !storage.IsNoRowError(err) {
 		c.IndentedJSON(http.StatusInternalServerError, "could get create travel.")
 		return
@@ -181,7 +181,7 @@ func (r Router) addTravel(c *gin.Context) {
 	}
 
 	if !travelExistsAlready {
-		travel, err = r.queries.CreateTravel(c, queries.CreateTravelParams{
+		travel, err = r.Queries.CreateTravel(c, queries.CreateTravelParams{
 			Title:     input.Title,
 			StartedAt: input.StartedAt,
 			EndedAt:   input.EndedAt,
@@ -194,12 +194,12 @@ func (r Router) addTravel(c *gin.Context) {
 	}
 
 	for _, countryInput := range input.Countries {
-		country, err := r.queries.GetCountryByCode(c, countryInput)
+		country, err := r.Queries.GetCountryByCode(c, countryInput)
 		if err != nil {
 			c.IndentedJSON(http.StatusInternalServerError, "could not find country.")
 			return
 		}
-		_, err = r.queries.CreateTravelCountry(c, queries.CreateTravelCountryParams{
+		_, err = r.Queries.CreateTravelCountry(c, queries.CreateTravelCountryParams{
 			TravelID:  travel.ID,
 			CountryID: country.ID,
 		})
@@ -211,7 +211,7 @@ func (r Router) addTravel(c *gin.Context) {
 	}
 
 	for _, resourceInput := range input.Resources {
-		_, err = r.queries.CreateTravelResource(c, queries.CreateTravelResourceParams{
+		_, err = r.Queries.CreateTravelResource(c, queries.CreateTravelResourceParams{
 			TravelID:   travel.ID,
 			ResourceID: int32(resourceInput),
 		})
@@ -223,7 +223,7 @@ func (r Router) addTravel(c *gin.Context) {
 	}
 
 	for _, travelerInput := range input.Travelers {
-		_, err = r.queries.CreateTravelTraveler(c, queries.CreateTravelTravelerParams{
+		_, err = r.Queries.CreateTravelTraveler(c, queries.CreateTravelTravelerParams{
 			TravelID:   travel.ID,
 			TravelerID: int32(travelerInput),
 		})
