@@ -14,35 +14,32 @@ import (
 )
 
 func main() {
-
 	seed := flag.Bool("seed", false, "This flag is for database seed")
 	migrate := flag.Bool("migrate", false, "This flag is for database migrations")
 	configFile := flag.String("config", "", "This flag is for config file path")
 	flag.Parse()
-
-	if *migrate {
-		storage.Migrate()
-		fmt.Println("Database migrated")
-	}
 
 	cfg, err := config.LoadConfig(*configFile)
 	if err != nil {
 		log.Fatalf("Couldn't load config: %v", err)
 	}
 
-	queries, err := storage.GetQueries()
+	db := storage.Storage{
+		Config: cfg.DBConfig,
+	}
+	queries, err := db.GetQueries()
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if *migrate {
-		storage.Migrate()
+		db.Migrate()
 		fmt.Println("Database migrated")
 	}
 
 	if *seed {
-		storage.SeedCountries()
+		db.SeedCountries()
 		fmt.Println("Database seeded with countries")
 	}
 	api := endpoints.Router{

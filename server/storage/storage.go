@@ -4,18 +4,29 @@ import (
 	"context"
 	"database/sql"
 	"encoding/csv"
+	"fmt"
 	"log"
 	"os"
 	"strings"
 
+	"github.com/aminrashidbeigi/history-travels/config"
 	"github.com/aminrashidbeigi/history-travels/storage/queries"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
-func GetQueries() (*queries.Queries, error) {
-	db, err := sql.Open("postgres", "user=postgres dbname=travels")
+type Storage struct {
+	Config config.DBConfig
+}
+
+func (s Storage) getDataSourceName() string {
+	return fmt.Sprintf("user=%s password=%s dbname=%s host=%s sslmode=disable",
+		s.Config.Username, s.Config.Password, s.Config.DBName, s.Config.Host)
+}
+
+func (s Storage) GetQueries() (*queries.Queries, error) {
+	db, err := sql.Open("postgres", s.getDataSourceName())
 	if err != nil {
 		return nil, err
 	}
@@ -26,10 +37,15 @@ func GetQueries() (*queries.Queries, error) {
 	return queries_storage, nil
 }
 
-func Migrate() {
+func (s Storage) getMigrateDBAddress() string {
+	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		s.Config.Username, s.Config.Password, s.Config.Host, s.Config.Port, s.Config.DBName)
+}
+
+func (s Storage) Migrate() {
 	m, err := migrate.New(
 		"file://storage/migrations",
-		"postgres://postgres@localhost:5432/travels?sslmode=disable")
+		s.getMigrateDBAddress())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,13 +54,12 @@ func Migrate() {
 	}
 }
 
-func SeedCountries() {
-	f, err := os.Open("storage/data/countries.csv")
+func (s Storage) SeedCountries() {
+	f, err := os.Open("/server/storage/data/countries.csv")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	println("helllo")
 	// remember to close the file at the end of the program
 	defer f.Close()
 	ctx := context.Background()
@@ -57,7 +72,7 @@ func SeedCountries() {
 		log.Fatal(err)
 	}
 
-	query_storage, err := GetQueries()
+	query_storage, err := s.GetQueries()
 	if err != nil {
 		log.Fatal(err)
 	}

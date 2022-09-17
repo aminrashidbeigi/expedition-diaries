@@ -8,6 +8,15 @@ type Config struct {
 	Environment string
 	Host        string
 	Port        string
+	DBConfig    DBConfig
+}
+
+type DBConfig struct {
+	Host     string
+	Port     string
+	Username string
+	Password string
+	DBName   string
 }
 
 var default_confs = map[string]string{
