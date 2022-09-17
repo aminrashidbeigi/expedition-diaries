@@ -1,0 +1,11 @@
+{
+    "environment": "dev",
+    "host": "127.0.0.1",
+    "db": {
+        "host": "127.0.0.1",
+        "port": 5432,
+        "db_name": "travels",
+        "username": "amin",
+        "password": "password_should_replace"
+    }
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "name": "add-travel",
+    "path": "/add-travel",
+    "component": "/home/amin/work/side-projects/history-travelers/client/pages/add-travel.vue",
+    "chunkName": "pages/add-travel",
+    "_name": "_d14a848a"
+  },
+  {
+    "name": "countries-country",
+    "path": "/countries/:country?",
+    "component": "/home/amin/work/side-projects/history-travelers/client/pages/countries/_country.vue",
+    "chunkName": "pages/countries/_country",
+    "_name": "_d07b5f72"
+  },
+  {
+    "name": "index",
+    "path": "/",
+    "component": "/home/amin/work/side-projects/history-travelers/client/pages/index.vue",
+    "chunkName": "pages/index",
+    "_name": "_6b2467ed"
+  }
+]

@@ -3,16 +3,14 @@ version: '3.9'
 services:
   server:
     container_name: golang_container
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
     network_mode: "host"
+    build:
+      context: ./server
+      dockerfile: Dockerfile
   client:
     container_name: nuxtjs_container
     build:
-      context: ./frontend
+      context: ./client
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
