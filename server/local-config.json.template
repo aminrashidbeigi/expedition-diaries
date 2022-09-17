@@ -1,0 +1,11 @@
+{
+    "environment": "dev",
+    "host": "host",
+    "db": {
+        "host": "db_host",
+        "port": 5432,
+        "db_name": "db",
+        "username": "username",
+        "password": "password"
+    }
+}

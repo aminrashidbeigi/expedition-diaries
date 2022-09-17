@@ -4,3 +4,4 @@ temp_files/
 map/
 .vscode
 client/yarn-error.log
+server/local-config.json
