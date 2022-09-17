@@ -5,9 +5,13 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_run:
+    workflows: ["Deploy"]
+    branches: [main]
+    types: 
+      - completed
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
@@ -20,8 +24,8 @@ jobs:
 
     - name: Build
       run: go build -v ./...
-      working-directory: backend
+      working-directory: server
 
     - name: Test
       run: go test -v ./...
-      working-directory: backend
+      working-directory: server

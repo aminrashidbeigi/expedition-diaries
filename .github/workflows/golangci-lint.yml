@@ -7,6 +7,11 @@ on:
     branches:
       - master
       - main
+  workflow_run:
+    workflows: ["Deploy"]
+    branches: [main]
+    types: 
+      - completed
   pull_request:
 permissions:
   contents: read
@@ -24,4 +29,4 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.48
-          working-directory: backend
+          working-directory: server
