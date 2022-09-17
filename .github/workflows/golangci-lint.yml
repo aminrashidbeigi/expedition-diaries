@@ -1,4 +1,4 @@
-name: golangci-lint
+name: GoLint
 
 on:
   push:
@@ -7,11 +7,7 @@ on:
     branches:
       - master
       - main
-  workflow_run:
-    workflows: ["Deploy"]
-    branches: [main]
-    types: 
-      - completed
+  
   pull_request:
 permissions:
   contents: read
