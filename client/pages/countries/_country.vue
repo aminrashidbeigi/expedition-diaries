@@ -66,7 +66,7 @@ export default {
     Footer,
   },
   async asyncData({ params, $axios }) {
-    const countryTravels = await $axios.$get(process.env.baseAPI + '/country-travels/' + params.country)
+    const countryTravels = await $axios.$get(process.env.baseAPI + '/api/country-travels/' + params.country)
     return { countryTravels }
   },
 }

@@ -9,8 +9,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/aminrashidbeigi/history-travels/config"
-	"github.com/aminrashidbeigi/history-travels/storage/queries"
+	"github.com/aminrashidbeigi/expedition-diaries/config"
+	"github.com/aminrashidbeigi/expedition-diaries/storage/queries"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"

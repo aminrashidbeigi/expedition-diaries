@@ -5,10 +5,10 @@
       <Header/>
       <div class="mt-8 bg-white overflow-hidden shadow sm:rounded-lg p-6">
         <h2 class="text-2xl leading-7 font-semibold">
-          Welcome to history travelers!
+          Welcome to expedition diaries!
         </h2>
         <p class="mt-3 text-gray-600">
-        Select your favorite country to check it's history travelers.
+        Select your favorite country to check it's expedition diaries.
         </p>
         <p class="text-gray-600">
           Help us by <a href="/add-travel">suggesting a trip</a> :)</p>

@@ -1,4 +1,4 @@
-# history-travelers
+# Expedition Diaries
 
 ## Build Setup
 
