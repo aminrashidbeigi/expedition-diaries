@@ -11,9 +11,9 @@ RUN make build
 
 FROM docker.repos.balad.ir/debian:bullseye-slim
 WORKDIR /server
-COPY --from=BUILDER /server/history-travels /usr/bin/history-travels
+COPY --from=BUILDER /server/expedition-diaries /usr/bin/expedition-diaries
 COPY --from=BUILDER /server .
 
 EXPOSE 8080
 
-CMD [ "history-travels"]
+CMD [ "expedition-diaries", "-config=./local-config.json"]

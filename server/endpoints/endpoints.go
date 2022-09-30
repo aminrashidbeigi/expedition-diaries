@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/aminrashidbeigi/history-travels/storage"
-	"github.com/aminrashidbeigi/history-travels/storage/queries"
+	"github.com/aminrashidbeigi/expedition-diaries/storage"
+	"github.com/aminrashidbeigi/expedition-diaries/storage/queries"
 	"github.com/gin-gonic/gin"
 )
 

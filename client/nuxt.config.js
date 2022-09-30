@@ -1,7 +1,7 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'history-travelers',
+    title: 'Expedition Diaries',
     htmlAttrs: {
       lang: 'en'
     },
@@ -19,12 +19,12 @@ export default {
   env: {
     baseUrl:
       process.env.NODE_ENV === 'dev'
-        ? 'http://localhost:3000'
-        : 'http://37.32.25.134:3000',
+        ? 'http://127.0.0.1:3000'
+        : 'http://127.0.0.1:3000',
     baseAPI:
       process.env.NODE_ENV === 'dev'
-        ? 'http://localhost:8080'
-        : 'http://37.32.25.134:8080',
+        ? 'http://127.0.0.1:8080'
+        : 'https://expedition-diaries.com',
     compact: true
   },
 
@@ -66,7 +66,7 @@ export default {
   server: {
     host: process.env.NODE_ENV === 'dev'
         ? '127.0.0.1'
-        : '0.0.0.0'
+        : '127.0.0.1'
   },
 
   loaders: [

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex justify-center pt-4 space-x-2">
-      <a href="https://github.com/aminrashidbeigi/history-travels" target="_blank"><svg
+      <a href="https://github.com/aminrashidbeigi/expedition-diaries" target="_blank"><svg
         class="w-6 h-6 text-gray-600 hover:text-gray-800 button--github"
         xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink"

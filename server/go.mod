@@ -1,4 +1,4 @@
-module github.com/aminrashidbeigi/history-travels
+module github.com/aminrashidbeigi/expedition-diaries
 
 go 1.18
 

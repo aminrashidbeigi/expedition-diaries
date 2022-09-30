@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/aminrashidbeigi/history-travels/config"
-	"github.com/aminrashidbeigi/history-travels/endpoints"
-	"github.com/aminrashidbeigi/history-travels/middlewares"
-	"github.com/aminrashidbeigi/history-travels/storage"
+	"github.com/aminrashidbeigi/expedition-diaries/config"
+	"github.com/aminrashidbeigi/expedition-diaries/endpoints"
+	"github.com/aminrashidbeigi/expedition-diaries/middlewares"
+	"github.com/aminrashidbeigi/expedition-diaries/storage"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 )
