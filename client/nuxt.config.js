@@ -76,14 +76,14 @@ export default {
     { test: /\.js$/, loader: 'babel', query: {compact: false} }
   ],
   
-  sitemap: {
-    hostname: process.env.BASE_URL,
-    gzip: true,
-    generate: false,
-    exclude: [],
-    routes: async () => {
-        const { data } = await axios.get('https://expedition-diaries.com/api/countries')
-        return data.map((country) => `/countries/${country.Code}`)
-    }
-  },
+  // sitemap: {
+  //   hostname: 'https://expedition-diaries.com',
+  //   gzip: true,
+  //   generate: false,
+  //   exclude: [],
+  //   routes: async () => {
+  //       const { data } = await axios.get('https://expedition-diaries.com/api/countries')
+  //       return data.map((country) => `/countries/${country.Code}`)
+  //   }
+  // },
 }
