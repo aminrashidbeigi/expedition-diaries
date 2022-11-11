@@ -70,7 +70,6 @@ func main() {
 		router.POST("/add-traveler", api.AddTraveler)
 		router.POST("/add-travel", api.AddTravel)
 	}
-	println(cfg.Host)
 	err = router.Run(cfg.Host + ":" + cfg.Port)
 	if err != nil {
 		log.Fatal(err)

@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -24,7 +26,7 @@ export default {
     baseAPI:
       process.env.NODE_ENV === 'dev'
         ? 'http://127.0.0.1:8080'
-        : 'https://expedition-diaries.com',
+        : 'https://expedition-diaries.com/api',
     compact: true
   },
 
@@ -50,6 +52,7 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/vuetify',
+    '@nuxtjs/sitemap',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -71,5 +74,16 @@ export default {
 
   loaders: [
     { test: /\.js$/, loader: 'babel', query: {compact: false} }
-  ]
+  ],
+  
+  sitemap: {
+    hostname: process.env.BASE_URL,
+    gzip: true,
+    generate: false,
+    exclude: [],
+    routes: async () => {
+        const { data } = await axios.get('https://expedition-diaries.com/api/countries')
+        return data.map((country) => `/countries/${country.Code}`)
+    }
+  },
 }
