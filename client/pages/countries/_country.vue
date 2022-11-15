@@ -21,7 +21,7 @@
               </p>
               <div class="relative mx-auto w-60 h-80">
                 <a :href="resource.Link" target="_blank">
-                  <img :src="resource.Image" class="relative w-full h-full rounded-md shadow-md">
+                  <img :src="resource.Image" :alt="resource.Title" class="relative w-full h-full rounded-md shadow-md">
                 </a>
               </div>
               <br>

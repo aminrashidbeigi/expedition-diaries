@@ -1,7 +1,7 @@
 <template>
     <div class="content-center">
         <a href="/">
-            <img src="../static/logo.png" class="mx-auto">
+            <img src="../static/logo.png" class="mx-auto" alt="Expedition Diaries">
         </a>
     </div>
 </template>
