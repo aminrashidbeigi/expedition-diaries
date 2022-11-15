@@ -11,13 +11,20 @@
           <div v-if="!countryTravels.Travels">
             No travel found for {{ countryTravels.Country.Name }}.
             <br>
-            Help us by <a href="/add-travel">suggesting a trip</a> :)
+            Help us by 
+            <a 
+              href="/add-travel"
+              class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
+                suggesting a trip
+            </a> :)
           </div>
           <div v-for="travel in countryTravels.Travels">
             <h2 class="font-bold">📖 Resources</h2>
             <div v-for="resource in travel.Resources">
               <p class="font-meduim">
-                <a :href="resource.Link" target="_blank">{{resource.Title}}</a>
+                <a :href="resource.Link" target="_blank" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
+                  {{resource.Title}}
+                </a>
               </p>
               <div class="relative mx-auto w-60 h-80">
                 <a :href="resource.Link" target="_blank">
@@ -29,15 +36,20 @@
 
             <h2 class="font-bold">🤠 Travelers</h2>
             <div v-for="traveler in travel.Travelers">
-              <p><a :href="traveler.Link" target="_blank">{{traveler.Name}}</a></p>
+              <p>
+                - <a :href="traveler.Link" target="_blank" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
+                  {{traveler.Name}}
+                </a>
+              </p>
             </div>
             <br>
 
             <h2 class="font-bold">🌎 Countries of this travel</h2>
-
             <ul>
               <li v-for="country in travel.Countries">
-                <a :href="`/countries/` + country.Code">{{country.Name}}</a>
+                - <a :href="`/countries/` + country.Code" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
+                  {{country.Name}}
+                </a>
               </li> 
             </ul>
             <div class="mt-4 pt-4 text-gray-800 border-t border-dashed"/>
