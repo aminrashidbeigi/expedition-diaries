@@ -52,6 +52,9 @@ type Resource struct {
 }
 
 type Travel struct {
+	Title     string
+	StartedAt string
+	EndedAt   string
 	Resources []Resource
 	Travelers []Traveler
 	Countries []Country
@@ -103,6 +106,9 @@ func (r Router) GetCountryTravelsByCode(c *gin.Context) {
 		}
 
 		travels = append(travels, Travel{
+			Title:     travel.Title,
+			StartedAt: travel.StartedAt,
+			EndedAt:   travel.EndedAt,
 			Resources: resourcesRecordToResourceType(resources),
 			Travelers: travelersRecordToTravelerType(travelers),
 			Countries: countriesRecordToCountryType(countries),

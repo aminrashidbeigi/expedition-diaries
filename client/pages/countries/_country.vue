@@ -19,21 +19,16 @@
             </a> :)
           </div>
           <div v-for="travel in countryTravels.Travels">
-            <h2 class="font-bold">📖 Resources</h2>
-            <div v-for="resource in travel.Resources">
-              <p class="font-meduim">
-                <a :href="resource.Link" target="_blank" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
-                  {{resource.Title}}
-                </a>
-              </p>
-              <div class="relative mx-auto w-60 h-80">
-                <a :href="resource.Link" target="_blank">
-                  <img :src="resource.Image" :alt="resource.Title" class="relative w-full h-full rounded-md shadow-md">
-                </a>
-              </div>
-              <br>
-            </div>
+            <h2 class="font-bold text-xl">{{travel.Title}}</h2>
+            <br>
 
+            <h2 class="font-bold">📅 Duration</h2>
+            <div>
+              <p>From {{travel.StartedAt? travel.StartedAt : "?"}} to {{travel.EndedAt? travel.EndedAt : "?"}}</p>
+            </div>
+            <br>
+
+           
             <h2 class="font-bold">🤠 Travelers</h2>
             <div v-for="traveler in travel.Travelers">
               <p>
@@ -52,6 +47,24 @@
                 </a>
               </li> 
             </ul>
+            <br>
+
+            <h2 class="font-bold">📖 Resources</h2>
+            <div v-for="resource in travel.Resources">
+              <p class="font-meduim">
+                <a :href="resource.Link" target="_blank" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
+                  {{resource.Title}}
+                </a>
+              </p>
+              <div class="relative mx-auto w-60 h-80">
+                <a :href="resource.Link" target="_blank">
+                  <img :src="resource.Image" :alt="resource.Title" class="relative w-full h-full rounded-md shadow-md">
+                </a>
+              </div>
+              <br>
+            </div>
+
+            
             <div class="mt-4 pt-4 text-gray-800 border-t border-dashed"/>
           </div>
         </div>
