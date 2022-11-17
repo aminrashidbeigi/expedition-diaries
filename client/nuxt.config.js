@@ -84,7 +84,7 @@ export default {
     baseImageURL:
       process.env.NODE_ENV === 'dev'
         ? 'http://127.0.0.1:3000/images/'
-        : 'https://expedition-diaries.com/images/',
+        : 'https://expedition-diaries.com/static/images/',
   },
 
   // sitemap: {
