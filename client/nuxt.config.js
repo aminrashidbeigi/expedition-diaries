@@ -27,6 +27,10 @@ export default {
       process.env.NODE_ENV === 'dev'
         ? 'http://127.0.0.1:8080'
         : 'https://expedition-diaries.com/api',
+    baseImageURL:
+      process.env.NODE_ENV === 'dev'
+        ? 'http://127.0.0.1:3000/images/'
+        : 'https://expedition-diaries.com/images/',
     compact: true
   },
 
@@ -75,7 +79,14 @@ export default {
   loaders: [
     { test: /\.js$/, loader: 'babel', query: {compact: false} }
   ],
-  
+ 
+  publicRuntimeConfig: {
+    baseImageURL:
+      process.env.NODE_ENV === 'dev'
+        ? 'http://127.0.0.1:3000/images/'
+        : 'https://expedition-diaries.com/images/',
+  },
+
   // sitemap: {
   //   hostname: 'https://expedition-diaries.com',
   //   gzip: true,
