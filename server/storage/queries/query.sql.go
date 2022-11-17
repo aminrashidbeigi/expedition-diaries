@@ -7,6 +7,7 @@ package queries
 
 import (
 	"context"
+	"database/sql"
 )
 
 const createCountry = `-- name: CreateCountry :one
@@ -36,7 +37,7 @@ INSERT INTO resources (
 ) VALUES (
   $1, $2, $3
 )
-RETURNING id, title, link, image
+RETURNING id, title, link, image, language, type
 `
 
 type CreateResourceParams struct {
@@ -53,6 +54,8 @@ func (q *Queries) CreateResource(ctx context.Context, arg CreateResourceParams) 
 		&i.Title,
 		&i.Link,
 		&i.Image,
+		&i.Language,
+		&i.Type,
 	)
 	return i, err
 }
@@ -63,7 +66,7 @@ INSERT INTO travels (
 ) VALUES (
   $1, $2, $3
 ) 
-ON CONFLICT DO NOTHING RETURNING id, title, started_at, ended_at
+ON CONFLICT DO NOTHING RETURNING id, title, started_at, ended_at, route
 `
 
 type CreateTravelParams struct {
@@ -80,6 +83,7 @@ func (q *Queries) CreateTravel(ctx context.Context, arg CreateTravelParams) (Tra
 		&i.Title,
 		&i.StartedAt,
 		&i.EndedAt,
+		&i.Route,
 	)
 	return i, err
 }
@@ -153,7 +157,7 @@ INSERT INTO travelers (
 ) VALUES (
   $1, $2
 )
-RETURNING id, name, link
+RETURNING id, name, link, image, nationality
 `
 
 type CreateTravelerParams struct {
@@ -164,7 +168,13 @@ type CreateTravelerParams struct {
 func (q *Queries) CreateTraveler(ctx context.Context, arg CreateTravelerParams) (Traveler, error) {
 	row := q.db.QueryRowContext(ctx, createTraveler, arg.Name, arg.Link)
 	var i Traveler
-	err := row.Scan(&i.ID, &i.Name, &i.Link)
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Link,
+		&i.Image,
+		&i.Nationality,
+	)
 	return i, err
 }
 
@@ -196,7 +206,7 @@ func (q *Queries) GetCountries(ctx context.Context) ([]Country, error) {
 }
 
 const getCountriesByTravelID = `-- name: GetCountriesByTravelID :many
-SELECT countries.id, code, name, travel_id, country_id, travels.id, title, started_at, ended_at FROM countries
+SELECT countries.id, code, name, travel_id, country_id, travels.id, title, started_at, ended_at, route FROM countries
 INNER JOIN travel_countries on countries.id = travel_countries.country_id
 INNER JOIN travels on travel_countries.travel_id = travels.id
 WHERE travels.id = $1
@@ -212,6 +222,7 @@ type GetCountriesByTravelIDRow struct {
 	Title     string
 	StartedAt string
 	EndedAt   string
+	Route     sql.NullString
 }
 
 func (q *Queries) GetCountriesByTravelID(ctx context.Context, id int32) ([]GetCountriesByTravelIDRow, error) {
@@ -233,6 +244,7 @@ func (q *Queries) GetCountriesByTravelID(ctx context.Context, id int32) ([]GetCo
 			&i.Title,
 			&i.StartedAt,
 			&i.EndedAt,
+			&i.Route,
 		); err != nil {
 			return nil, err
 		}
@@ -260,7 +272,7 @@ func (q *Queries) GetCountryByCode(ctx context.Context, code string) (Country, e
 }
 
 const getResourcesByTravelID = `-- name: GetResourcesByTravelID :many
-SELECT resources.id, resources.title, link, image, travel_id, resource_id, travels.id, travels.title, started_at, ended_at FROM resources
+SELECT resources.id, resources.title, link, image, language, type, travel_id, resource_id, travels.id, travels.title, started_at, ended_at, route FROM resources
 INNER JOIN travel_resources on travel_resources.resource_id = resources.id
 INNER JOIN travels on travels.id = travel_resources.travel_id
 WHERE travels.id = $1
@@ -271,12 +283,15 @@ type GetResourcesByTravelIDRow struct {
 	Title      string
 	Link       string
 	Image      string
+	Language   sql.NullString
+	Type       sql.NullString
 	TravelID   int32
 	ResourceID int32
 	ID_2       int32
 	Title_2    string
 	StartedAt  string
 	EndedAt    string
+	Route      sql.NullString
 }
 
 func (q *Queries) GetResourcesByTravelID(ctx context.Context, id int32) ([]GetResourcesByTravelIDRow, error) {
@@ -293,12 +308,15 @@ func (q *Queries) GetResourcesByTravelID(ctx context.Context, id int32) ([]GetRe
 			&i.Title,
 			&i.Link,
 			&i.Image,
+			&i.Language,
+			&i.Type,
 			&i.TravelID,
 			&i.ResourceID,
 			&i.ID_2,
 			&i.Title_2,
 			&i.StartedAt,
 			&i.EndedAt,
+			&i.Route,
 		); err != nil {
 			return nil, err
 		}
@@ -314,7 +332,7 @@ func (q *Queries) GetResourcesByTravelID(ctx context.Context, id int32) ([]GetRe
 }
 
 const getTravelByTitle = `-- name: GetTravelByTitle :one
-SELECT id, title, started_at, ended_at FROM travels
+SELECT id, title, started_at, ended_at, route FROM travels
 WHERE title = $1 LIMIT 1
 `
 
@@ -326,27 +344,31 @@ func (q *Queries) GetTravelByTitle(ctx context.Context, title string) (Travel, e
 		&i.Title,
 		&i.StartedAt,
 		&i.EndedAt,
+		&i.Route,
 	)
 	return i, err
 }
 
 const getTravelersByTravelID = `-- name: GetTravelersByTravelID :many
-SELECT travelers.id, name, link, travel_id, traveler_id, travels.id, title, started_at, ended_at FROM travelers
+SELECT travelers.id, name, link, image, nationality, travel_id, traveler_id, travels.id, title, started_at, ended_at, route FROM travelers
 INNER JOIN travel_travelers on travelers.id = travel_travelers.traveler_id
 INNER JOIN travels on travel_travelers.travel_id = travels.id
 WHERE travels.id = $1
 `
 
 type GetTravelersByTravelIDRow struct {
-	ID         int32
-	Name       string
-	Link       string
-	TravelID   int32
-	TravelerID int32
-	ID_2       int32
-	Title      string
-	StartedAt  string
-	EndedAt    string
+	ID          int32
+	Name        string
+	Link        string
+	Image       sql.NullString
+	Nationality sql.NullString
+	TravelID    int32
+	TravelerID  int32
+	ID_2        int32
+	Title       string
+	StartedAt   string
+	EndedAt     string
+	Route       sql.NullString
 }
 
 func (q *Queries) GetTravelersByTravelID(ctx context.Context, id int32) ([]GetTravelersByTravelIDRow, error) {
@@ -362,12 +384,15 @@ func (q *Queries) GetTravelersByTravelID(ctx context.Context, id int32) ([]GetTr
 			&i.ID,
 			&i.Name,
 			&i.Link,
+			&i.Image,
+			&i.Nationality,
 			&i.TravelID,
 			&i.TravelerID,
 			&i.ID_2,
 			&i.Title,
 			&i.StartedAt,
 			&i.EndedAt,
+			&i.Route,
 		); err != nil {
 			return nil, err
 		}
@@ -383,7 +408,7 @@ func (q *Queries) GetTravelersByTravelID(ctx context.Context, id int32) ([]GetTr
 }
 
 const getTravlesByCountryCode = `-- name: GetTravlesByCountryCode :many
-SELECT travels.id, title, started_at, ended_at, travel_id, country_id, countries.id, code, name FROM travels
+SELECT travels.id, title, started_at, ended_at, route, travel_id, country_id, countries.id, code, name FROM travels
 INNER JOIN travel_countries on travels.id = travel_countries.travel_id
 INNER JOIN countries on travel_countries.country_id = countries.id
 WHERE countries.code = $1
@@ -394,6 +419,7 @@ type GetTravlesByCountryCodeRow struct {
 	Title     string
 	StartedAt string
 	EndedAt   string
+	Route     sql.NullString
 	TravelID  int32
 	CountryID int32
 	ID_2      int32
@@ -415,6 +441,7 @@ func (q *Queries) GetTravlesByCountryCode(ctx context.Context, code string) ([]G
 			&i.Title,
 			&i.StartedAt,
 			&i.EndedAt,
+			&i.Route,
 			&i.TravelID,
 			&i.CountryID,
 			&i.ID_2,

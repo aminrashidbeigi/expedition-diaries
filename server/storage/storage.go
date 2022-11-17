@@ -50,7 +50,9 @@ func (s Storage) Migrate() {
 		log.Fatal(err)
 	}
 	if err := m.Up(); err != nil {
-		log.Fatal(err)
+		if err != migrate.ErrNoChange {
+			log.Fatal(err)
+		}
 	}
 }
 

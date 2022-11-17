@@ -4,7 +4,9 @@
 
 package queries
 
-import ()
+import (
+	"database/sql"
+)
 
 type Country struct {
 	ID   int32
@@ -13,10 +15,12 @@ type Country struct {
 }
 
 type Resource struct {
-	ID    int32
-	Title string
-	Link  string
-	Image string
+	ID       int32
+	Title    string
+	Link     string
+	Image    string
+	Language sql.NullString
+	Type     sql.NullString
 }
 
 type Travel struct {
@@ -24,6 +28,7 @@ type Travel struct {
 	Title     string
 	StartedAt string
 	EndedAt   string
+	Route     sql.NullString
 }
 
 type TravelCountry struct {
@@ -42,7 +47,9 @@ type TravelTraveler struct {
 }
 
 type Traveler struct {
-	ID   int32
-	Name string
-	Link string
+	ID          int32
+	Name        string
+	Link        string
+	Image       sql.NullString
+	Nationality sql.NullString
 }

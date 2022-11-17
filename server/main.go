@@ -10,14 +10,14 @@ import (
 	"github.com/aminrashidbeigi/expedition-diaries/middlewares"
 	"github.com/aminrashidbeigi/expedition-diaries/storage"
 	jwt "github.com/appleboy/gin-jwt/v2"
-	"github.com/gin-gonic/gin"
 	"github.com/getsentry/sentry-go"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
 
 	err := sentry.Init(sentry.ClientOptions{
-		Dsn: "https://5c2865f9e4ca429db523bb3a503bbb56@o303173.ingest.sentry.io/4504140873072640",
+		Dsn:              "https://5c2865f9e4ca429db523bb3a503bbb56@o303173.ingest.sentry.io/4504140873072640",
 		TracesSampleRate: 1.0,
 	})
 	if err != nil {
@@ -25,7 +25,6 @@ func main() {
 	}
 
 	seed := flag.Bool("seed", false, "This flag is for database seed")
-	migrate := flag.Bool("migrate", false, "This flag is for database migrations")
 	configFile := flag.String("config", "", "This flag is for config file path")
 	flag.Parse()
 
@@ -43,10 +42,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if *migrate {
-		db.Migrate()
-		fmt.Println("Database migrated")
-	}
+	db.Migrate()
+	fmt.Println("Database migrated")
 
 	if *seed {
 		db.SeedCountries()
