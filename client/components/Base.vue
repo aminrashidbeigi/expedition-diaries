@@ -14,7 +14,7 @@
         Select your favorite country to check it's expedition diaries.
         </p>
         <p class="text-gray-600">
-          Help us by <a href="/add-travel" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">suggesting a trip</a> :)</p>
+          Help us by <a href="/add-travel" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">suggesting an expedition</a> :)</p>
         <div class="mt-4 pt-4 text-gray-800 border-t border-dashed">
           <Map/>
         </div>

@@ -5,17 +5,17 @@
       <Header/>
       <div class="mt-8 bg-white overflow-hidden shadow sm:rounded-lg p-6">
         <h2 class="text-2xl leading-7 font-bold">
-          {{ countryTravels.Country.Name }} Travels
+          {{ countryTravels.Country.Name }} expeditions
         </h2>
         <div class="mt-4 pt-4 text-gray-800 border-t border-dashed">
           <div v-if="!countryTravels.Travels">
-            No travel found for {{ countryTravels.Country.Name }}.
+            No expedition found for {{ countryTravels.Country.Name }}.
             <br>
             Help us by 
             <a 
               href="/add-travel"
               class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
-                suggesting a trip
+                suggesting an expedition
             </a> :)
           </div>
           <div v-for="travel in countryTravels.Travels">
