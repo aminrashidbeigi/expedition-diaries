@@ -31,10 +31,13 @@
            
             <h3 class="font-bold">🤠 Travelers</h3>
             <div v-for="traveler in travel.Travelers">
-              <p>
+              <p v-if="traveler.Link">
                 - <a :href="traveler.Link" target="_blank" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
                   {{traveler.Name}}
                 </a>
+              </p>
+              <p v-else>
+                - {{traveler.Name}}
               </p>
             </div>
             <br>
