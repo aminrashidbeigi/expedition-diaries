@@ -29,9 +29,9 @@ WHERE travels.id = $1;
 
 -- name: CreateResource :one
 INSERT INTO resources (
-  title, link, image
+  title, link, image, language, type
 ) VALUES (
-  $1, $2, $3
+  $1, $2, $3, $4, $5
 )
 RETURNING *;
 
@@ -45,9 +45,9 @@ WHERE travels.id = $1;
 
 -- name: CreateTraveler :one
 INSERT INTO travelers (
-  name, link
+  name, link, image, nationality
 ) VALUES (
-  $1, $2
+  $1, $2, $3, $4
 )
 RETURNING *;
 
@@ -60,9 +60,9 @@ WHERE travels.id = $1;
 
 -- name: CreateTravel :one
 INSERT INTO travels (
-  title, started_at, ended_at
+  title, started_at, ended_at, route
 ) VALUES (
-  $1, $2, $3
+  $1, $2, $3, $4
 ) 
 ON CONFLICT DO NOTHING RETURNING *;
 

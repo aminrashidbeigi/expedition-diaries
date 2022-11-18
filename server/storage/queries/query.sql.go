@@ -33,21 +33,29 @@ func (q *Queries) CreateCountry(ctx context.Context, arg CreateCountryParams) (C
 
 const createResource = `-- name: CreateResource :one
 INSERT INTO resources (
-  title, link, image
+  title, link, image, language, type
 ) VALUES (
-  $1, $2, $3
+  $1, $2, $3, $4, $5
 )
 RETURNING id, title, link, image, language, type
 `
 
 type CreateResourceParams struct {
-	Title string
-	Link  string
-	Image string
+	Title    string
+	Link     string
+	Image    string
+	Language sql.NullString
+	Type     sql.NullString
 }
 
 func (q *Queries) CreateResource(ctx context.Context, arg CreateResourceParams) (Resource, error) {
-	row := q.db.QueryRowContext(ctx, createResource, arg.Title, arg.Link, arg.Image)
+	row := q.db.QueryRowContext(ctx, createResource,
+		arg.Title,
+		arg.Link,
+		arg.Image,
+		arg.Language,
+		arg.Type,
+	)
 	var i Resource
 	err := row.Scan(
 		&i.ID,
@@ -62,9 +70,9 @@ func (q *Queries) CreateResource(ctx context.Context, arg CreateResourceParams) 
 
 const createTravel = `-- name: CreateTravel :one
 INSERT INTO travels (
-  title, started_at, ended_at
+  title, started_at, ended_at, route
 ) VALUES (
-  $1, $2, $3
+  $1, $2, $3, $4
 ) 
 ON CONFLICT DO NOTHING RETURNING id, title, started_at, ended_at, route
 `
@@ -73,10 +81,16 @@ type CreateTravelParams struct {
 	Title     string
 	StartedAt string
 	EndedAt   string
+	Route     sql.NullString
 }
 
 func (q *Queries) CreateTravel(ctx context.Context, arg CreateTravelParams) (Travel, error) {
-	row := q.db.QueryRowContext(ctx, createTravel, arg.Title, arg.StartedAt, arg.EndedAt)
+	row := q.db.QueryRowContext(ctx, createTravel,
+		arg.Title,
+		arg.StartedAt,
+		arg.EndedAt,
+		arg.Route,
+	)
 	var i Travel
 	err := row.Scan(
 		&i.ID,
@@ -153,20 +167,27 @@ func (q *Queries) CreateTravelTraveler(ctx context.Context, arg CreateTravelTrav
 
 const createTraveler = `-- name: CreateTraveler :one
 INSERT INTO travelers (
-  name, link
+  name, link, image, nationality
 ) VALUES (
-  $1, $2
+  $1, $2, $3, $4
 )
 RETURNING id, name, link, image, nationality
 `
 
 type CreateTravelerParams struct {
-	Name string
-	Link string
+	Name        string
+	Link        string
+	Image       sql.NullString
+	Nationality sql.NullString
 }
 
 func (q *Queries) CreateTraveler(ctx context.Context, arg CreateTravelerParams) (Traveler, error) {
-	row := q.db.QueryRowContext(ctx, createTraveler, arg.Name, arg.Link)
+	row := q.db.QueryRowContext(ctx, createTraveler,
+		arg.Name,
+		arg.Link,
+		arg.Image,
+		arg.Nationality,
+	)
 	var i Traveler
 	err := row.Scan(
 		&i.ID,

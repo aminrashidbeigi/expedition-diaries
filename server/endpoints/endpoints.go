@@ -1,6 +1,7 @@
 package endpoints
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -19,20 +20,25 @@ type AddTravelInput struct {
 	Title     string   `json:"title" binding:"required"`
 	StartedAt string   `json:"started_at"`
 	EndedAt   string   `json:"ended_at"`
+	Route     string   `json:"route"`
 	Travelers []int    `json:"travelers" binding:"required"`
 	Resources []int    `json:"resources" binding:"required"`
 	Countries []string `json:"countries" binding:"required"`
 }
 
 type AddTravelerInput struct {
-	Name string `json:"name" binding:"required"`
-	Link string `json:"link" binding:"required"`
+	Name        string `json:"name" binding:"required"`
+	Link        string `json:"link"`
+	Image       string `json:"image"`
+	Nationality string `json:"nationality"`
 }
 
 type AddResourceInput struct {
-	Title string `json:"title" binding:"required"`
-	Link  string `json:"link" binding:"required"`
-	Image string `json:"image" binding:"required"`
+	Title    string `json:"title" binding:"required"`
+	Link     string `json:"link" binding:"required"`
+	Image    string `json:"image" binding:"required"`
+	Language string `json:"language"`
+	Type     string `json:"type"`
 }
 
 type Country struct {
@@ -41,20 +47,25 @@ type Country struct {
 }
 
 type Traveler struct {
-	Name string
-	Link string
+	Name        string
+	Link        string
+	Image       string
+	Nationality string
 }
 
 type Resource struct {
-	Title string
-	Link  string
-	Image string
+	Title    string
+	Link     string
+	Image    string
+	Language string
+	Type     string
 }
 
 type Travel struct {
 	Title     string
 	StartedAt string
 	EndedAt   string
+	Route     string
 	Resources []Resource
 	Travelers []Traveler
 	Countries []Country
@@ -109,6 +120,7 @@ func (r Router) GetCountryTravelsByCode(c *gin.Context) {
 			Title:     travel.Title,
 			StartedAt: travel.StartedAt,
 			EndedAt:   travel.EndedAt,
+			Route:     travel.Route.String,
 			Resources: resourcesRecordToResourceType(resources),
 			Travelers: travelersRecordToTravelerType(travelers),
 			Countries: countriesRecordToCountryType(countries),
@@ -136,8 +148,10 @@ func (r Router) AddTraveler(c *gin.Context) {
 	}
 
 	traveler, err := r.Queries.CreateTraveler(c, queries.CreateTravelerParams{
-		Name: input.Name,
-		Link: input.Link,
+		Name:        input.Name,
+		Link:        input.Link,
+		Image:       sql.NullString{String: input.Image, Valid: true},
+		Nationality: sql.NullString{String: input.Nationality, Valid: true},
 	})
 
 	if err != nil {
@@ -156,9 +170,11 @@ func (r Router) AddResource(c *gin.Context) {
 	}
 
 	traveler, err := r.Queries.CreateResource(c, queries.CreateResourceParams{
-		Title: input.Title,
-		Link:  input.Link,
-		Image: input.Image,
+		Title:    input.Title,
+		Link:     input.Link,
+		Image:    input.Image,
+		Language: sql.NullString{String: input.Language, Valid: true},
+		Type:     sql.NullString{String: input.Type, Valid: true},
 	})
 
 	if err != nil {
@@ -191,6 +207,7 @@ func (r Router) AddTravel(c *gin.Context) {
 			Title:     input.Title,
 			StartedAt: input.StartedAt,
 			EndedAt:   input.EndedAt,
+			Route:     sql.NullString{String: input.Route, Valid: true},
 		})
 		if err != nil && !storage.IsNoRowError(err) {
 			log.Println("this is error: ", err)
@@ -247,9 +264,11 @@ func resourcesRecordToResourceType(resourcesRecords []queries.GetResourcesByTrav
 	var resources []Resource
 	for _, resourceRecord := range resourcesRecords {
 		resources = append(resources, Resource{
-			Link:  resourceRecord.Link,
-			Image: resourceRecord.Image,
-			Title: resourceRecord.Title,
+			Link:     resourceRecord.Link,
+			Image:    resourceRecord.Image,
+			Title:    resourceRecord.Title,
+			Language: resourceRecord.Language.String,
+			Type:     resourceRecord.Type.String,
 		})
 	}
 
@@ -260,8 +279,10 @@ func travelersRecordToTravelerType(travelersRecords []queries.GetTravelersByTrav
 	var travelers []Traveler
 	for _, travelerRecord := range travelersRecords {
 		travelers = append(travelers, Traveler{
-			Link: travelerRecord.Link,
-			Name: travelerRecord.Name,
+			Link:        travelerRecord.Link,
+			Name:        travelerRecord.Name,
+			Image:       travelerRecord.Image.String,
+			Nationality: travelerRecord.Nationality.String,
 		})
 	}
 
