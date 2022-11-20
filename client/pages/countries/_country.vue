@@ -44,7 +44,7 @@
         
             <div v-if="travel.Route">
               <h3 class="font-bold">📍 Route</h3>
-              <div class="relative mx-auto w-80 h-80">
+              <div class="relative mx-auto w-80">
                 <a :href="$config.baseImageURL+travel.Route" target="_blank">
                   <img :src="$config.baseImageURL+travel.Route" :alt="travel.Title + ' expedition route'" class="relative w-full h-full rounded-md shadow-md">
                 </a>
