@@ -27,8 +27,8 @@
               <p>From {{travel.StartedAt? travel.StartedAt : "?"}} to {{travel.EndedAt? travel.EndedAt : "?"}}</p>
             </div>
             <br>
-
-           
+            
+          
             <h3 class="font-bold">🤠 Travelers</h3>
             <div v-for="traveler in travel.Travelers">
               <p v-if="traveler.Link">
@@ -41,7 +41,17 @@
               </p>
             </div>
             <br>
-
+        
+            <div v-if="travel.Route">
+              <h3 class="font-bold">📍 Route</h3>
+              <div class="relative mx-auto w-80 h-80">
+                <a :href="$config.baseImageURL+travel.Route" target="_blank">
+                  <img :src="$config.baseImageURL+travel.Route" :alt="travel.Title + ' expedition route'" class="relative w-full h-full rounded-md shadow-md">
+                </a>
+              </div>
+              <br>
+            </div>
+         
             <h3 class="font-bold">🌎 Countries of this travel</h3>
             <ul>
               <li v-for="country in travel.Countries">
@@ -67,7 +77,6 @@
               <br>
             </div>
 
-            
             <div class="mt-4 pt-4 text-gray-800 border-t border-dashed"/>
           </div>
         </div>
