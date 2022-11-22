@@ -61,6 +61,7 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/vuetify',
     '@nuxtjs/sitemap',
+    '@nuxtjs/google-analytics',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -91,14 +92,7 @@ export default {
         : 'https://expedition-diaries.com/static/images/',
   },
 
-  // sitemap: {
-  //   hostname: 'https://expedition-diaries.com',
-  //   gzip: true,
-  //   generate: false,
-  //   exclude: [],
-  //   routes: async () => {
-  //       const { data } = await axios.get('https://expedition-diaries.com/api/countries')
-  //       return data.map((country) => `/countries/${country.Code}`)
-  //   }
-  // },
+  googleAnalytics: {
+    id: 'G-F3NRXPDYLN'
+  },
 }
