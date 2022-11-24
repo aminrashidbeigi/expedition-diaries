@@ -61,7 +61,6 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/vuetify',
     '@nuxtjs/sitemap',
-    '@nuxtjs/google-analytics',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -92,7 +91,4 @@ export default {
         : 'https://expedition-diaries.com/static/images/',
   },
 
-  googleAnalytics: {
-    id: 'G-F3NRXPDYLN'
-  },
 }
