@@ -428,6 +428,44 @@ func (q *Queries) GetTravelersByTravelID(ctx context.Context, id int32) ([]GetTr
 	return items, nil
 }
 
+const getTravels = `-- name: GetTravels :many
+SELECT id, title, started_at, ended_at, route FROM travels ORDER BY id LIMIT $1 OFFSET $2
+`
+
+type GetTravelsParams struct {
+	Limit  int32
+	Offset int32
+}
+
+func (q *Queries) GetTravels(ctx context.Context, arg GetTravelsParams) ([]Travel, error) {
+	rows, err := q.db.QueryContext(ctx, getTravels, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Travel
+	for rows.Next() {
+		var i Travel
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.StartedAt,
+			&i.EndedAt,
+			&i.Route,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getTravlesByCountryCode = `-- name: GetTravlesByCountryCode :many
 SELECT travels.id, title, started_at, ended_at, route, travel_id, country_id, countries.id, code, name FROM travels
 INNER JOIN travel_countries on travels.id = travel_countries.travel_id

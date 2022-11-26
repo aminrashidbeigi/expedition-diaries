@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/aminrashidbeigi/expedition-diaries/storage"
@@ -128,6 +129,62 @@ func (r Router) GetCountryTravelsByCode(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, CountryTravels{Country: country, Travels: travels})
+}
+
+func (r Router) GetTravels(c *gin.Context) {
+	limit64, err := strconv.ParseInt(c.DefaultQuery("limit", "10"), 10, 32)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, "limit format is not correct")
+		return
+	}
+	limit := int32(limit64)
+
+	offset64, err := strconv.ParseInt(c.DefaultQuery("offset", "0"), 10, 32)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, "offset format is not correct")
+		return
+	}
+	offset := int32(offset64)
+
+	var travels []Travel
+	travelsRecords, err := r.Queries.GetTravels(c, queries.GetTravelsParams{
+		Offset: offset,
+		Limit:  limit,
+	})
+
+	log.Println(len(travelsRecords))
+
+	if err != nil {
+		return
+	}
+	for _, travel := range travelsRecords {
+		travelers, err := r.Queries.GetTravelersByTravelID(c, travel.ID)
+		if err != nil {
+			return
+		}
+
+		resources, err := r.Queries.GetResourcesByTravelID(c, travel.ID)
+		if err != nil {
+			return
+		}
+
+		countries, err := r.Queries.GetCountriesByTravelID(c, travel.ID)
+		if err != nil {
+			return
+		}
+
+		travels = append(travels, Travel{
+			Title:     travel.Title,
+			StartedAt: travel.StartedAt,
+			EndedAt:   travel.EndedAt,
+			Route:     travel.Route.String,
+			Resources: resourcesRecordToResourceType(resources),
+			Travelers: travelersRecordToTravelerType(travelers),
+			Countries: countriesRecordToCountryType(countries),
+		})
+	}
+
+	c.IndentedJSON(http.StatusOK, travels)
 }
 
 func (r Router) GetCountries(c *gin.Context) {

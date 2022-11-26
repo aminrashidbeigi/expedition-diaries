@@ -93,3 +93,6 @@ INSERT INTO travel_resources (
   $1, $2
 )
 ON CONFLICT DO NOTHING RETURNING *;
+
+-- name: GetTravels :many
+SELECT * FROM travels ORDER BY id LIMIT $1 OFFSET $2;

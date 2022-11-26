@@ -70,6 +70,7 @@ func main() {
 	auth.GET("/refresh_token", authMiddleware.RefreshHandler)
 
 	router.GET("/country-travels/:code", api.GetCountryTravelsByCode)
+	router.GET("/travels", api.GetTravels)
 	router.GET("/countries", api.GetCountries)
 	router.Use(authMiddleware.MiddlewareFunc())
 	{
