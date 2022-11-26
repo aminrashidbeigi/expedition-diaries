@@ -19,7 +19,9 @@
             </a> :)
           </div>
           <div v-for="travel in travels">
-            <h2 class="font-bold text-xl">{{travel.Title}}</h2>
+            <a :href="`/travels/`+travel.Slug" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
+              <h2 class="font-bold text-xl">{{travel.Title}}</h2>
+            </a>
             <br>
 
             <h3 class="font-bold">📅 Duration</h3>

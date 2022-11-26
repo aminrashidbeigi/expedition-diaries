@@ -60,9 +60,9 @@ WHERE travels.id = $1;
 
 -- name: CreateTravel :one
 INSERT INTO travels (
-  title, started_at, ended_at, route
+  title, started_at, ended_at, route, slug
 ) VALUES (
-  $1, $2, $3, $4
+  $1, $2, $3, $4, $5
 ) 
 ON CONFLICT DO NOTHING RETURNING *;
 
@@ -96,3 +96,6 @@ ON CONFLICT DO NOTHING RETURNING *;
 
 -- name: GetTravels :many
 SELECT * FROM travels ORDER BY id LIMIT $1 OFFSET $2;
+
+-- name: GetTravelBySlug :many
+SELECT * FROM travels WHERE slug=$1 LIMIT 1;

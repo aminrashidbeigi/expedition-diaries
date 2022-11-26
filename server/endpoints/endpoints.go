@@ -22,6 +22,7 @@ type AddTravelInput struct {
 	StartedAt string   `json:"started_at"`
 	EndedAt   string   `json:"ended_at"`
 	Route     string   `json:"route"`
+	Slug      string   `json:"slug"`
 	Travelers []int    `json:"travelers" binding:"required"`
 	Resources []int    `json:"resources" binding:"required"`
 	Countries []string `json:"countries" binding:"required"`
@@ -64,6 +65,7 @@ type Resource struct {
 
 type Travel struct {
 	Title     string
+	Slug      string
 	StartedAt string
 	EndedAt   string
 	Route     string
@@ -119,6 +121,7 @@ func (r Router) GetCountryTravelsByCode(c *gin.Context) {
 
 		travels = append(travels, Travel{
 			Title:     travel.Title,
+			Slug:      travel.Slug.String,
 			StartedAt: travel.StartedAt,
 			EndedAt:   travel.EndedAt,
 			Route:     travel.Route.String,
@@ -129,6 +132,47 @@ func (r Router) GetCountryTravelsByCode(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, CountryTravels{Country: country, Travels: travels})
+}
+
+func (r Router) GetTravelBySlug(c *gin.Context) {
+	slug := c.Param("slug")
+
+	travelRecords, err := r.Queries.GetTravelBySlug(c, sql.NullString{String: slug, Valid: true})
+	if err != nil {
+		return
+	}
+	if len(travelRecords) == 0 {
+		return
+	}
+	travelRecord := travelRecords[0]
+
+	travelers, err := r.Queries.GetTravelersByTravelID(c, travelRecord.ID)
+	if err != nil {
+		return
+	}
+
+	resources, err := r.Queries.GetResourcesByTravelID(c, travelRecord.ID)
+	if err != nil {
+		return
+	}
+
+	countries, err := r.Queries.GetCountriesByTravelID(c, travelRecord.ID)
+	if err != nil {
+		return
+	}
+
+	travel := Travel{
+		Title:     travelRecord.Title,
+		Slug:      travelRecord.Slug.String,
+		StartedAt: travelRecord.StartedAt,
+		EndedAt:   travelRecord.EndedAt,
+		Route:     travelRecord.Route.String,
+		Resources: resourcesRecordToResourceType(resources),
+		Travelers: travelersRecordToTravelerType(travelers),
+		Countries: countriesRecordToCountryType(countries),
+	}
+
+	c.IndentedJSON(http.StatusOK, travel)
 }
 
 func (r Router) GetTravels(c *gin.Context) {
@@ -152,8 +196,6 @@ func (r Router) GetTravels(c *gin.Context) {
 		Limit:  limit,
 	})
 
-	log.Println(len(travelsRecords))
-
 	if err != nil {
 		return
 	}
@@ -175,6 +217,7 @@ func (r Router) GetTravels(c *gin.Context) {
 
 		travels = append(travels, Travel{
 			Title:     travel.Title,
+			Slug:      travel.Slug.String,
 			StartedAt: travel.StartedAt,
 			EndedAt:   travel.EndedAt,
 			Route:     travel.Route.String,
@@ -265,6 +308,7 @@ func (r Router) AddTravel(c *gin.Context) {
 			StartedAt: input.StartedAt,
 			EndedAt:   input.EndedAt,
 			Route:     sql.NullString{String: input.Route, Valid: true},
+			Slug:      sql.NullString{String: input.Slug, Valid: true},
 		})
 		if err != nil && !storage.IsNoRowError(err) {
 			log.Println("this is error: ", err)

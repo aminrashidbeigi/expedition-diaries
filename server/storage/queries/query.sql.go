@@ -70,11 +70,11 @@ func (q *Queries) CreateResource(ctx context.Context, arg CreateResourceParams) 
 
 const createTravel = `-- name: CreateTravel :one
 INSERT INTO travels (
-  title, started_at, ended_at, route
+  title, started_at, ended_at, route, slug
 ) VALUES (
-  $1, $2, $3, $4
+  $1, $2, $3, $4, $5
 ) 
-ON CONFLICT DO NOTHING RETURNING id, title, started_at, ended_at, route
+ON CONFLICT DO NOTHING RETURNING id, title, started_at, ended_at, route, slug
 `
 
 type CreateTravelParams struct {
@@ -82,6 +82,7 @@ type CreateTravelParams struct {
 	StartedAt string
 	EndedAt   string
 	Route     sql.NullString
+	Slug      sql.NullString
 }
 
 func (q *Queries) CreateTravel(ctx context.Context, arg CreateTravelParams) (Travel, error) {
@@ -90,6 +91,7 @@ func (q *Queries) CreateTravel(ctx context.Context, arg CreateTravelParams) (Tra
 		arg.StartedAt,
 		arg.EndedAt,
 		arg.Route,
+		arg.Slug,
 	)
 	var i Travel
 	err := row.Scan(
@@ -98,6 +100,7 @@ func (q *Queries) CreateTravel(ctx context.Context, arg CreateTravelParams) (Tra
 		&i.StartedAt,
 		&i.EndedAt,
 		&i.Route,
+		&i.Slug,
 	)
 	return i, err
 }
@@ -227,7 +230,7 @@ func (q *Queries) GetCountries(ctx context.Context) ([]Country, error) {
 }
 
 const getCountriesByTravelID = `-- name: GetCountriesByTravelID :many
-SELECT countries.id, code, name, travel_id, country_id, travels.id, title, started_at, ended_at, route FROM countries
+SELECT countries.id, code, name, travel_id, country_id, travels.id, title, started_at, ended_at, route, slug FROM countries
 INNER JOIN travel_countries on countries.id = travel_countries.country_id
 INNER JOIN travels on travel_countries.travel_id = travels.id
 WHERE travels.id = $1
@@ -244,6 +247,7 @@ type GetCountriesByTravelIDRow struct {
 	StartedAt string
 	EndedAt   string
 	Route     sql.NullString
+	Slug      sql.NullString
 }
 
 func (q *Queries) GetCountriesByTravelID(ctx context.Context, id int32) ([]GetCountriesByTravelIDRow, error) {
@@ -266,6 +270,7 @@ func (q *Queries) GetCountriesByTravelID(ctx context.Context, id int32) ([]GetCo
 			&i.StartedAt,
 			&i.EndedAt,
 			&i.Route,
+			&i.Slug,
 		); err != nil {
 			return nil, err
 		}
@@ -293,7 +298,7 @@ func (q *Queries) GetCountryByCode(ctx context.Context, code string) (Country, e
 }
 
 const getResourcesByTravelID = `-- name: GetResourcesByTravelID :many
-SELECT resources.id, resources.title, link, image, language, type, travel_id, resource_id, travels.id, travels.title, started_at, ended_at, route FROM resources
+SELECT resources.id, resources.title, link, image, language, type, travel_id, resource_id, travels.id, travels.title, started_at, ended_at, route, slug FROM resources
 INNER JOIN travel_resources on travel_resources.resource_id = resources.id
 INNER JOIN travels on travels.id = travel_resources.travel_id
 WHERE travels.id = $1
@@ -313,6 +318,7 @@ type GetResourcesByTravelIDRow struct {
 	StartedAt  string
 	EndedAt    string
 	Route      sql.NullString
+	Slug       sql.NullString
 }
 
 func (q *Queries) GetResourcesByTravelID(ctx context.Context, id int32) ([]GetResourcesByTravelIDRow, error) {
@@ -338,6 +344,41 @@ func (q *Queries) GetResourcesByTravelID(ctx context.Context, id int32) ([]GetRe
 			&i.StartedAt,
 			&i.EndedAt,
 			&i.Route,
+			&i.Slug,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getTravelBySlug = `-- name: GetTravelBySlug :many
+SELECT id, title, started_at, ended_at, route, slug FROM travels WHERE slug=$1 LIMIT 1
+`
+
+func (q *Queries) GetTravelBySlug(ctx context.Context, slug sql.NullString) ([]Travel, error) {
+	rows, err := q.db.QueryContext(ctx, getTravelBySlug, slug)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Travel
+	for rows.Next() {
+		var i Travel
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.StartedAt,
+			&i.EndedAt,
+			&i.Route,
+			&i.Slug,
 		); err != nil {
 			return nil, err
 		}
@@ -353,7 +394,7 @@ func (q *Queries) GetResourcesByTravelID(ctx context.Context, id int32) ([]GetRe
 }
 
 const getTravelByTitle = `-- name: GetTravelByTitle :one
-SELECT id, title, started_at, ended_at, route FROM travels
+SELECT id, title, started_at, ended_at, route, slug FROM travels
 WHERE title = $1 LIMIT 1
 `
 
@@ -366,12 +407,13 @@ func (q *Queries) GetTravelByTitle(ctx context.Context, title string) (Travel, e
 		&i.StartedAt,
 		&i.EndedAt,
 		&i.Route,
+		&i.Slug,
 	)
 	return i, err
 }
 
 const getTravelersByTravelID = `-- name: GetTravelersByTravelID :many
-SELECT travelers.id, name, link, image, nationality, travel_id, traveler_id, travels.id, title, started_at, ended_at, route FROM travelers
+SELECT travelers.id, name, link, image, nationality, travel_id, traveler_id, travels.id, title, started_at, ended_at, route, slug FROM travelers
 INNER JOIN travel_travelers on travelers.id = travel_travelers.traveler_id
 INNER JOIN travels on travel_travelers.travel_id = travels.id
 WHERE travels.id = $1
@@ -390,6 +432,7 @@ type GetTravelersByTravelIDRow struct {
 	StartedAt   string
 	EndedAt     string
 	Route       sql.NullString
+	Slug        sql.NullString
 }
 
 func (q *Queries) GetTravelersByTravelID(ctx context.Context, id int32) ([]GetTravelersByTravelIDRow, error) {
@@ -414,6 +457,7 @@ func (q *Queries) GetTravelersByTravelID(ctx context.Context, id int32) ([]GetTr
 			&i.StartedAt,
 			&i.EndedAt,
 			&i.Route,
+			&i.Slug,
 		); err != nil {
 			return nil, err
 		}
@@ -429,7 +473,7 @@ func (q *Queries) GetTravelersByTravelID(ctx context.Context, id int32) ([]GetTr
 }
 
 const getTravels = `-- name: GetTravels :many
-SELECT id, title, started_at, ended_at, route FROM travels ORDER BY id LIMIT $1 OFFSET $2
+SELECT id, title, started_at, ended_at, route, slug FROM travels ORDER BY id LIMIT $1 OFFSET $2
 `
 
 type GetTravelsParams struct {
@@ -452,6 +496,7 @@ func (q *Queries) GetTravels(ctx context.Context, arg GetTravelsParams) ([]Trave
 			&i.StartedAt,
 			&i.EndedAt,
 			&i.Route,
+			&i.Slug,
 		); err != nil {
 			return nil, err
 		}
@@ -467,7 +512,7 @@ func (q *Queries) GetTravels(ctx context.Context, arg GetTravelsParams) ([]Trave
 }
 
 const getTravlesByCountryCode = `-- name: GetTravlesByCountryCode :many
-SELECT travels.id, title, started_at, ended_at, route, travel_id, country_id, countries.id, code, name FROM travels
+SELECT travels.id, title, started_at, ended_at, route, slug, travel_id, country_id, countries.id, code, name FROM travels
 INNER JOIN travel_countries on travels.id = travel_countries.travel_id
 INNER JOIN countries on travel_countries.country_id = countries.id
 WHERE countries.code = $1
@@ -479,6 +524,7 @@ type GetTravlesByCountryCodeRow struct {
 	StartedAt string
 	EndedAt   string
 	Route     sql.NullString
+	Slug      sql.NullString
 	TravelID  int32
 	CountryID int32
 	ID_2      int32
@@ -501,6 +547,7 @@ func (q *Queries) GetTravlesByCountryCode(ctx context.Context, code string) ([]G
 			&i.StartedAt,
 			&i.EndedAt,
 			&i.Route,
+			&i.Slug,
 			&i.TravelID,
 			&i.CountryID,
 			&i.ID_2,

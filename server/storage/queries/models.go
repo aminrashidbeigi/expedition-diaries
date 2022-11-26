@@ -29,6 +29,7 @@ type Travel struct {
 	StartedAt string
 	EndedAt   string
 	Route     sql.NullString
+	Slug      sql.NullString
 }
 
 type TravelCountry struct {

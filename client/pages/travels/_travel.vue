@@ -5,31 +5,15 @@
       <Header/>
       <div class="mt-2 bg-white overflow-hidden shadow sm:rounded-lg p-6">
         <h1 class="text-2xl leading-7 font-bold">
-          {{ countryTravels.Country.Name }} expeditions
+          {{ travel.Title }}
         </h1>
         <div class="mt-4 pt-4 text-gray-800 border-t border-dashed">
-          <div v-if="!countryTravels.Travels">
-            No expedition found for {{ countryTravels.Country.Name }}.
-            <br>
-            Help us by 
-            <a 
-              href="/add-travel"
-              class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
-                suggesting an expedition
-            </a> :)
-          </div>
-          <div v-for="travel in countryTravels.Travels">
-            <a :href="`/travels/`+travel.Slug" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
-              <h2 class="font-bold text-xl">{{travel.Title}}</h2>
-            </a>
-            <br>
 
             <h3 class="font-bold">📅 Duration</h3>
             <div>
               <p>From {{travel.StartedAt? travel.StartedAt : "?"}} to {{travel.EndedAt? travel.EndedAt : "?"}}</p>
             </div>
             <br>
-            
           
             <h3 class="font-bold">🤠 Travelers</h3>
             <div v-for="traveler in travel.Travelers">
@@ -79,8 +63,6 @@
               <br>
             </div>
 
-            <div class="mt-4 pt-4 text-gray-800 border-t border-dashed"/>
-          </div>
         </div>
       </div>
       <Footer/>
@@ -95,22 +77,18 @@ import Footer from '../../components/Footer.vue'
 export default {
   data() {
     return {
-      countryTravels: {
-        Country: "",
-        Travels: {}
-      },
-      travels: {},
+      travel: {},
       title: "",
     }
   },
   head() {
     return {
-      title: this.countryTravels.Country.Name + ' expeditions',
+      title: this.travel.Title,
       meta: [
         {
           hid: 'description',
           name: 'description',
-          content: 'The journeys of explorers who have passed through ' + this.countryTravels.Country.Name + ' throughout history'
+          content: this.travel.Title + ' journey'
         }
       ]
     }
@@ -120,8 +98,8 @@ export default {
     Footer,
   },
   async asyncData({ params, $axios }) {
-    const countryTravels = await $axios.$get(process.env.baseAPI + '/country-travels/' + params.country)
-    return { countryTravels }
+    const travel = await $axios.$get(process.env.baseAPI + '/travels/' + params.travel)
+    return { travel }
   },
 }
 </script>

@@ -71,6 +71,7 @@ func main() {
 
 	router.GET("/country-travels/:code", api.GetCountryTravelsByCode)
 	router.GET("/travels", api.GetTravels)
+	router.GET("/travels/:slug", api.GetTravelBySlug)
 	router.GET("/countries", api.GetCountries)
 	router.Use(authMiddleware.MiddlewareFunc())
 	{
