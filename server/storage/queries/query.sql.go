@@ -473,7 +473,7 @@ func (q *Queries) GetTravelersByTravelID(ctx context.Context, id int32) ([]GetTr
 }
 
 const getTravels = `-- name: GetTravels :many
-SELECT id, title, started_at, ended_at, route, slug FROM travels ORDER BY id LIMIT $1 OFFSET $2
+SELECT id, title, started_at, ended_at, route, slug FROM travels ORDER BY id DESC LIMIT $1 OFFSET $2
 `
 
 type GetTravelsParams struct {

@@ -95,7 +95,7 @@ INSERT INTO travel_resources (
 ON CONFLICT DO NOTHING RETURNING *;
 
 -- name: GetTravels :many
-SELECT * FROM travels ORDER BY id LIMIT $1 OFFSET $2;
+SELECT * FROM travels ORDER BY id DESC LIMIT $1 OFFSET $2;
 
 -- name: GetTravelBySlug :many
 SELECT * FROM travels WHERE slug=$1 LIMIT 1;
