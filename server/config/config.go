@@ -5,10 +5,12 @@ import (
 )
 
 type Config struct {
-	Environment string
-	Host        string
-	Port        string
-	DBConfig    DBConfig
+	Environment     string
+	Host            string
+	Url             string
+	Port            string
+	Sitemaplocation string
+	DBConfig        DBConfig
 }
 
 type DBConfig struct {

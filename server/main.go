@@ -52,6 +52,9 @@ func main() {
 	api := endpoints.Router{
 		Queries: queries,
 	}
+
+	GenerateSitemap(queries, cfg.Url, cfg.Sitemaplocation)
+
 	router := gin.Default()
 
 	authMiddleware, err := middlewares.AuthMiddleware()
@@ -83,4 +86,5 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 }
