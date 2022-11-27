@@ -54,6 +54,7 @@ func (s Storage) Migrate() {
 			log.Fatal(err)
 		}
 	}
+	fmt.Println("Database migrated")
 }
 
 func (s Storage) SeedCountries() {

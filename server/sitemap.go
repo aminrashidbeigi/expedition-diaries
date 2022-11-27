@@ -13,12 +13,12 @@ import (
 func GenerateSitemap(storage *queries.Queries, hostName string, outputPath string) {
 	now := time.Now().UTC()
 
-	sm := smg.NewSitemap(true) // The argument is PrettyPrint which must be set on initializing
-	sm.SetName("sitemap")      // Optional - sets the file name without extension
+	sm := smg.NewSitemap(true) 
+	sm.SetName("sitemap")
 	sm.SetHostname(hostName)
 	sm.SetOutputPath(outputPath)
 	sm.SetLastMod(&now)
-	sm.SetCompress(false) // Default is true
+	sm.SetCompress(false)
 
 	err := sm.Add(&smg.SitemapLoc{
 		Loc:        "/",
@@ -94,4 +94,6 @@ func GenerateSitemap(storage *queries.Queries, hostName string, outputPath strin
 	for i, filename := range filenames {
 		fmt.Println("file no.", i+1, filename)
 	}
+
+	fmt.Println("Sitemap generated")
 }

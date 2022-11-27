@@ -43,7 +43,6 @@ func main() {
 	}
 
 	db.Migrate()
-	fmt.Println("Database migrated")
 
 	if *seed {
 		db.SeedCountries()
