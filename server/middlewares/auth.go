@@ -4,6 +4,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/aminrashidbeigi/expedition-diaries/config"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 )
@@ -22,7 +23,7 @@ type User struct {
 	LastName  string
 }
 
-func AuthMiddleware() (*jwt.GinJWTMiddleware, error) {
+func AuthMiddleware(userConfig config.User) (*jwt.GinJWTMiddleware, error) {
 	// the jwt middleware
 	authMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
 		Realm:       "test zone",
@@ -52,7 +53,7 @@ func AuthMiddleware() (*jwt.GinJWTMiddleware, error) {
 			userID := loginVals.Username
 			password := loginVals.Password
 
-			if userID == "admin" && password == "admin" {
+			if userID == userConfig.Username && password == userConfig.Password {
 				return &User{
 					UserName:  userID,
 					LastName:  "John",

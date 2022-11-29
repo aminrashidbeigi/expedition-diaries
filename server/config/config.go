@@ -11,6 +11,7 @@ type Config struct {
 	Port            string
 	Sitemaplocation string
 	DBConfig        DBConfig
+	User            User
 }
 
 type DBConfig struct {
@@ -19,6 +20,11 @@ type DBConfig struct {
 	Username string
 	Password string
 	DBName   string
+}
+
+type User struct {
+	Username string
+	Password string
 }
 
 var default_confs = map[string]string{

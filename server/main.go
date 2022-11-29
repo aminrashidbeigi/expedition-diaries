@@ -56,7 +56,7 @@ func main() {
 
 	router := gin.Default()
 
-	authMiddleware, err := middlewares.AuthMiddleware()
+	authMiddleware, err := middlewares.AuthMiddleware(cfg.User)
 	if err != nil {
 		log.Fatal(err)
 	}
