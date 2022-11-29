@@ -13,7 +13,7 @@ import (
 func GenerateSitemap(storage *queries.Queries, hostName string, outputPath string) {
 	now := time.Now().UTC()
 
-	sm := smg.NewSitemap(true) 
+	sm := smg.NewSitemap(true)
 	sm.SetName("sitemap")
 	sm.SetHostname(hostName)
 	sm.SetOutputPath(outputPath)
@@ -23,7 +23,7 @@ func GenerateSitemap(storage *queries.Queries, hostName string, outputPath strin
 	err := sm.Add(&smg.SitemapLoc{
 		Loc:        "/",
 		LastMod:    &now,
-		ChangeFreq: smg.Always,
+		ChangeFreq: smg.Daily,
 		Priority:   1.0,
 	})
 	if err != nil {
@@ -33,7 +33,7 @@ func GenerateSitemap(storage *queries.Queries, hostName string, outputPath strin
 	err = sm.Add(&smg.SitemapLoc{
 		Loc:        "/map",
 		LastMod:    &now,
-		ChangeFreq: smg.Always,
+		ChangeFreq: smg.Monthly,
 		Priority:   1.0,
 	})
 	if err != nil {
@@ -43,7 +43,7 @@ func GenerateSitemap(storage *queries.Queries, hostName string, outputPath strin
 	err = sm.Add(&smg.SitemapLoc{
 		Loc:        "/add-expedition",
 		LastMod:    &now,
-		ChangeFreq: smg.Always,
+		ChangeFreq: smg.Monthly,
 		Priority:   0.3,
 	})
 	if err != nil {
@@ -62,7 +62,7 @@ func GenerateSitemap(storage *queries.Queries, hostName string, outputPath strin
 		err := sm.Add(&smg.SitemapLoc{
 			Loc:        "/travels/" + travel.Slug.String,
 			LastMod:    &now,
-			ChangeFreq: smg.Always,
+			ChangeFreq: smg.Weekly,
 			Priority:   0.8,
 		})
 		if err != nil {
@@ -79,7 +79,7 @@ func GenerateSitemap(storage *queries.Queries, hostName string, outputPath strin
 		err := sm.Add(&smg.SitemapLoc{
 			Loc:        "/countries/" + country.Code,
 			LastMod:    &now,
-			ChangeFreq: smg.Always,
+			ChangeFreq: smg.Daily,
 			Priority:   0.7,
 		})
 		if err != nil {
