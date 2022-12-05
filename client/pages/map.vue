@@ -4,7 +4,19 @@
 
 <script>
 export default {
-  name: 'map'
+  name: 'map',
+  head() {
+    return {
+      title: 'Expedition Diaries countries map',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'countries map'
+        }
+      ]
+    }
+  },
 }
 </script>
 
