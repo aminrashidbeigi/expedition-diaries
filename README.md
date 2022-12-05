@@ -1,4 +1,5 @@
 # [expedition-diaries.com](https://expedition-diaries.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <p align="center">
   <img src="https://github.com/aminrashidbeigi/expedition-diaries/blob/main/client/static/logo.png?raw=true" alt="Expedition Diaries' logo"/>
 </p>
