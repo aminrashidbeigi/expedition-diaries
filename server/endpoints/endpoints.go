@@ -137,6 +137,10 @@ func (r Router) GetCountryTravelsByCode(c *gin.Context) {
 func (r Router) GetTravelBySlug(c *gin.Context) {
 	slug := c.Param("slug")
 
+	if slug == "" {
+		c.IndentedJSON(http.StatusBadRequest, "slug should not be empty.")
+		return
+	}
 	travelRecords, err := r.Queries.GetTravelBySlug(c, sql.NullString{String: slug, Valid: true})
 	if err != nil {
 		return
