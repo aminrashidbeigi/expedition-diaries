@@ -5,4 +5,4 @@ test: ## to run tests
 	go test -v -timeout 30s ./...
 
 build:
-	go build -o="expedition-diaries"
+	go build -o="expedition-diaries" ./cmd

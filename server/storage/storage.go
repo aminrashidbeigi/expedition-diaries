@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/aminrashidbeigi/expedition-diaries/config"
+	"github.com/aminrashidbeigi/expedition-diaries/cmd/config"
 	"github.com/aminrashidbeigi/expedition-diaries/storage/queries"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
