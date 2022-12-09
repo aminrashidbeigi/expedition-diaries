@@ -9,14 +9,13 @@
         </h1>
         <div class="mt-4 pt-4 text-gray-800 border-t border-dashed">
           <div v-if="!countryTravels.Travels">
-            No expedition found for {{ countryTravels.Country.Name }}.
+            No expedition has been submitted for {{ countryTravels.Country.Name }} yet.
             <br>
-            Help us by 
+            Do you want to submit one? Click 
             <a 
               href="/add-travel"
               class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
-                suggesting an expedition
-            </a> :)
+                here</a>.
           </div>
           <div v-for="travel in countryTravels.Travels">
             <a :href="`/travels/`+travel.Slug" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
