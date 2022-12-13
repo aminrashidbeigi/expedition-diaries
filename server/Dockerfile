@@ -1,4 +1,4 @@
-FROM docker.repos.balad.ir/golang:1.18 AS BUILDER
+FROM golang:1.18 AS BUILDER
 
 WORKDIR /server
 COPY go.mod ./
@@ -9,7 +9,7 @@ COPY . ./
 
 RUN make build
 
-FROM docker.repos.balad.ir/debian:bullseye-slim
+FROM debian:bullseye-slim
 WORKDIR /server
 COPY --from=BUILDER /server/expedition-diaries /usr/bin/expedition-diaries
 COPY --from=BUILDER /server .
