@@ -64,7 +64,7 @@ func AuthMiddleware(userConfig config.User) (*jwt.GinJWTMiddleware, error) {
 			return nil, jwt.ErrFailedAuthentication
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
-			if v, ok := data.(*User); ok && v.UserName == "admin" {
+			if v, ok := data.(*User); ok && v.UserName == userConfig.Username {
 				return true
 			}
 

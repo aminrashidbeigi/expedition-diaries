@@ -78,9 +78,9 @@ func main() {
 	router.GET("/countries", api.GetCountries)
 	router.Use(authMiddleware.MiddlewareFunc())
 	{
+		router.POST("/add-travel", api.AddTravel)
 		router.POST("/add-resource", api.AddResource)
 		router.POST("/add-traveler", api.AddTraveler)
-		router.POST("/add-travel", api.AddTravel)
 	}
 	err = router.Run(cfg.Host + ":" + cfg.Port)
 	if err != nil {

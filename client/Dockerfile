@@ -1,4 +1,4 @@
-FROM docker.repos.balad.ir/node:lts-alpine AS BUILDER
+FROM node:16.3.0-alpine AS BUILDER
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ COPY . .
 
 RUN npm run build
 
-FROM docker.repos.balad.ir/node:lts-alpine
+FROM node:16.3.0-alpine
 
 WORKDIR /app
 

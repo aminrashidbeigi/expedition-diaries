@@ -8,5 +8,10 @@
         "dbname": "db",
         "username": "username",
         "password": "password"
-    }
+    },
+    "sitemaplocation": "sitemap_location",
+    "user": {
+        "username": "username",
+        "password": "password"
+    } 
 }
