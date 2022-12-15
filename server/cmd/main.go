@@ -51,9 +51,12 @@ func main() {
 	}
 	api := endpoints.Router{
 		Queries: queries,
+		SitemapGenerator: &sitemap.SitemapGenerator{
+			Storage:    queries,
+			HostName:   cfg.Url,
+			OutputPath: cfg.Sitemaplocation,
+		},
 	}
-
-	sitemap.GenerateSitemap(queries, cfg.Url, cfg.Sitemaplocation)
 
 	router := gin.Default()
 
@@ -81,6 +84,7 @@ func main() {
 		router.POST("/add-travel", api.AddTravel)
 		router.POST("/add-resource", api.AddResource)
 		router.POST("/add-traveler", api.AddTraveler)
+		router.POST("/generate-sitemap", api.GenerateSitemap)
 	}
 	err = router.Run(cfg.Host + ":" + cfg.Port)
 	if err != nil {

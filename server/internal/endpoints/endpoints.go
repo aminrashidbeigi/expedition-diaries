@@ -8,13 +8,15 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/aminrashidbeigi/expedition-diaries/internal/sitemap"
 	"github.com/aminrashidbeigi/expedition-diaries/storage"
 	"github.com/aminrashidbeigi/expedition-diaries/storage/queries"
 	"github.com/gin-gonic/gin"
 )
 
 type Router struct {
-	Queries *queries.Queries
+	Queries          *queries.Queries
+	SitemapGenerator *sitemap.SitemapGenerator
 }
 
 type AddTravelInput struct {
@@ -363,6 +365,11 @@ func (r Router) AddTravel(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusCreated, travel)
+}
+
+func (r Router) GenerateSitemap(c *gin.Context) {
+	r.SitemapGenerator.Generate()
+	c.IndentedJSON(http.StatusOK, "Sitemap generated successfuly")
 }
 
 func resourcesRecordToResourceType(resourcesRecords []queries.GetResourcesByTravelIDRow) []Resource {

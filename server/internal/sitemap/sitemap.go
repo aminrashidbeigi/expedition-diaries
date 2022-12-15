@@ -10,13 +10,19 @@ import (
 	"github.com/sabloger/sitemap-generator/smg"
 )
 
-func GenerateSitemap(storage *queries.Queries, hostName string, outputPath string) {
+type SitemapGenerator struct {
+	Storage    *queries.Queries
+	HostName   string
+	OutputPath string
+}
+
+func (sg *SitemapGenerator) Generate() {
 	now := time.Now().UTC()
 
 	sm := smg.NewSitemap(true)
 	sm.SetName("sitemap")
-	sm.SetHostname(hostName)
-	sm.SetOutputPath(outputPath)
+	sm.SetHostname(sg.HostName)
+	sm.SetOutputPath(sg.OutputPath)
 	sm.SetLastMod(&now)
 	sm.SetCompress(false)
 
@@ -51,7 +57,7 @@ func GenerateSitemap(storage *queries.Queries, hostName string, outputPath strin
 	}
 
 	ctx := context.Background()
-	travels, err := storage.GetTravels(ctx, queries.GetTravelsParams{
+	travels, err := sg.Storage.GetTravels(ctx, queries.GetTravelsParams{
 		Offset: 0,
 		Limit:  1000,
 	})
@@ -70,7 +76,7 @@ func GenerateSitemap(storage *queries.Queries, hostName string, outputPath strin
 		}
 	}
 
-	countries, err := storage.GetCountries(ctx)
+	countries, err := sg.Storage.GetCountries(ctx)
 	if err != nil {
 		log.Fatal("can not get countries: ", err)
 	}
