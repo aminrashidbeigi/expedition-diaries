@@ -38,7 +38,7 @@ type AddTravelerInput struct {
 type AddResourceInput struct {
 	Title    string `json:"title" binding:"required"`
 	Link     string `json:"link" binding:"required"`
-	Image    string `json:"image" binding:"required"`
+	Image    string `json:"image"`
 	Language string `json:"language"`
 	Type     string `json:"type"`
 }
