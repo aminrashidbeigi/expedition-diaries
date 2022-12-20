@@ -25,7 +25,7 @@
 
             <h3 class="font-bold">📅 Duration</h3>
             <div>
-              <p>From {{travel.StartedAt? travel.StartedAt : "?"}} to {{travel.EndedAt? travel.EndedAt : "?"}}</p>
+              <p>From {{travel.StartedAt? travel.StartedAt : "?"}} A.D. to {{travel.EndedAt? travel.EndedAt : "?"}} A.D.</p>
             </div>
             <br>
             
