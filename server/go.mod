@@ -52,4 +52,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/sabloger/sitemap-generator => github.com/aminrashidbeigi/sitemap-generator v0.0.0-20220808180630-2bf50afb9486
+replace github.com/sabloger/sitemap-generator => github.com/aminrashidbeigi/sitemap-generator v0.0.0-20221221154616-4aba26213ba7

@@ -10,6 +10,7 @@ type Config struct {
 	Url             string
 	Port            string
 	Sitemaplocation string
+	Imagesprefix    string
 	DBConfig        DBConfig
 	User            User
 }
