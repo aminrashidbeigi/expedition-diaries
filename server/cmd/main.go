@@ -52,9 +52,10 @@ func main() {
 	api := endpoints.Router{
 		Queries: queries,
 		SitemapGenerator: &sitemap.SitemapGenerator{
-			Storage:    queries,
-			HostName:   cfg.Url,
-			OutputPath: cfg.Sitemaplocation,
+			Storage:      queries,
+			HostName:     cfg.Url,
+			OutputPath:   cfg.Sitemaplocation,
+			ImagesPrefix: cfg.Imagesprefix,
 		},
 	}
 

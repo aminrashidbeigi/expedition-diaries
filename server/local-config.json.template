@@ -13,5 +13,6 @@
     "user": {
         "username": "username",
         "password": "password"
-    } 
+    },
+    "imagesprefix": "/static/images"
 }
