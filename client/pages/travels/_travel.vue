@@ -25,6 +25,9 @@
               <p v-else>
                 - {{traveler.Name}}
               </p>
+              <div class="relative mx-auto w-80">
+                <img :src="$config.baseImageURL+traveler.Image" :alt="traveler.Name + ' image'" class="relative w-full h-full rounded-md shadow-md">
+              </div>
             </div>
             <br>
         
