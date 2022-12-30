@@ -8,6 +8,13 @@
           {{ travel.Title }}
         </h1>
         <div class="mt-4 pt-4 text-gray-800 border-t border-dashed">
+            <div v-if="travel.Description">
+              <p>
+                {{ travel.Description }}
+              </p>
+            
+            </div> 
+            <br>
 
             <h3 class="font-bold">📅 Duration</h3>
             <div>

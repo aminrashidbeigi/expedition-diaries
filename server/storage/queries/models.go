@@ -24,12 +24,13 @@ type Resource struct {
 }
 
 type Travel struct {
-	ID        int32
-	Title     string
-	StartedAt string
-	EndedAt   string
-	Route     sql.NullString
-	Slug      sql.NullString
+	ID          int32
+	Title       string
+	StartedAt   string
+	EndedAt     string
+	Route       sql.NullString
+	Slug        sql.NullString
+	Description sql.NullString
 }
 
 type TravelCountry struct {

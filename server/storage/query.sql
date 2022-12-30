@@ -60,9 +60,9 @@ WHERE travels.id = $1;
 
 -- name: CreateTravel :one
 INSERT INTO travels (
-  title, started_at, ended_at, route, slug
+  title, description, started_at, ended_at, route, slug
 ) VALUES (
-  $1, $2, $3, $4, $5
+  $1, $2, $3, $4, $5, $6
 ) 
 ON CONFLICT DO NOTHING RETURNING *;
 

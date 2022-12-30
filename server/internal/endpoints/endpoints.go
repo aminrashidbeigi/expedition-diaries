@@ -20,14 +20,15 @@ type Router struct {
 }
 
 type AddTravelInput struct {
-	Title     string   `json:"title" binding:"required"`
-	StartedAt string   `json:"started_at"`
-	EndedAt   string   `json:"ended_at"`
-	Route     string   `json:"route"`
-	Slug      string   `json:"slug"`
-	Travelers []int    `json:"travelers" binding:"required"`
-	Resources []int    `json:"resources" binding:"required"`
-	Countries []string `json:"countries" binding:"required"`
+	Title       string   `json:"title" binding:"required"`
+	Description string   `json:"description"`
+	StartedAt   string   `json:"started_at"`
+	EndedAt     string   `json:"ended_at"`
+	Route       string   `json:"route"`
+	Slug        string   `json:"slug"`
+	Travelers   []int    `json:"travelers" binding:"required"`
+	Resources   []int    `json:"resources" binding:"required"`
+	Countries   []string `json:"countries" binding:"required"`
 }
 
 type AddTravelerInput struct {
@@ -66,14 +67,15 @@ type Resource struct {
 }
 
 type Travel struct {
-	Title     string
-	Slug      string
-	StartedAt string
-	EndedAt   string
-	Route     string
-	Resources []Resource
-	Travelers []Traveler
-	Countries []Country
+	Title       string
+	Description string
+	Slug        string
+	StartedAt   string
+	EndedAt     string
+	Route       string
+	Resources   []Resource
+	Travelers   []Traveler
+	Countries   []Country
 }
 
 type CountryTravels struct {
@@ -122,14 +124,15 @@ func (r Router) GetCountryTravelsByCode(c *gin.Context) {
 		}
 
 		travels = append(travels, Travel{
-			Title:     travel.Title,
-			Slug:      travel.Slug.String,
-			StartedAt: travel.StartedAt,
-			EndedAt:   travel.EndedAt,
-			Route:     travel.Route.String,
-			Resources: resourcesRecordToResourceType(resources),
-			Travelers: travelersRecordToTravelerType(travelers),
-			Countries: countriesRecordToCountryType(countries),
+			Title:       travel.Title,
+			Description: travel.Description.String,
+			Slug:        travel.Slug.String,
+			StartedAt:   travel.StartedAt,
+			EndedAt:     travel.EndedAt,
+			Route:       travel.Route.String,
+			Resources:   resourcesRecordToResourceType(resources),
+			Travelers:   travelersRecordToTravelerType(travelers),
+			Countries:   countriesRecordToCountryType(countries),
 		})
 	}
 
@@ -168,14 +171,15 @@ func (r Router) GetTravelBySlug(c *gin.Context) {
 	}
 
 	travel := Travel{
-		Title:     travelRecord.Title,
-		Slug:      travelRecord.Slug.String,
-		StartedAt: travelRecord.StartedAt,
-		EndedAt:   travelRecord.EndedAt,
-		Route:     travelRecord.Route.String,
-		Resources: resourcesRecordToResourceType(resources),
-		Travelers: travelersRecordToTravelerType(travelers),
-		Countries: countriesRecordToCountryType(countries),
+		Title:       travelRecord.Title,
+		Description: travelRecord.Description.String,
+		Slug:        travelRecord.Slug.String,
+		StartedAt:   travelRecord.StartedAt,
+		EndedAt:     travelRecord.EndedAt,
+		Route:       travelRecord.Route.String,
+		Resources:   resourcesRecordToResourceType(resources),
+		Travelers:   travelersRecordToTravelerType(travelers),
+		Countries:   countriesRecordToCountryType(countries),
 	}
 
 	c.IndentedJSON(http.StatusOK, travel)
@@ -222,14 +226,15 @@ func (r Router) GetTravels(c *gin.Context) {
 		}
 
 		travels = append(travels, Travel{
-			Title:     travel.Title,
-			Slug:      travel.Slug.String,
-			StartedAt: travel.StartedAt,
-			EndedAt:   travel.EndedAt,
-			Route:     travel.Route.String,
-			Resources: resourcesRecordToResourceType(resources),
-			Travelers: travelersRecordToTravelerType(travelers),
-			Countries: countriesRecordToCountryType(countries),
+			Title:       travel.Title,
+			Description: travel.Description.String,
+			Slug:        travel.Slug.String,
+			StartedAt:   travel.StartedAt,
+			EndedAt:     travel.EndedAt,
+			Route:       travel.Route.String,
+			Resources:   resourcesRecordToResourceType(resources),
+			Travelers:   travelersRecordToTravelerType(travelers),
+			Countries:   countriesRecordToCountryType(countries),
 		})
 	}
 
@@ -310,11 +315,12 @@ func (r Router) AddTravel(c *gin.Context) {
 
 	if !travelExistsAlready {
 		travel, err = r.Queries.CreateTravel(c, queries.CreateTravelParams{
-			Title:     input.Title,
-			StartedAt: input.StartedAt,
-			EndedAt:   input.EndedAt,
-			Route:     sql.NullString{String: input.Route, Valid: true},
-			Slug:      sql.NullString{String: input.Slug, Valid: true},
+			Title:       input.Title,
+			Description: sql.NullString{String: input.Description, Valid: true},
+			StartedAt:   input.StartedAt,
+			EndedAt:     input.EndedAt,
+			Route:       sql.NullString{String: input.Route, Valid: true},
+			Slug:        sql.NullString{String: input.Slug, Valid: true},
 		})
 		if err != nil && !storage.IsNoRowError(err) {
 			log.Println("this is error: ", err)
