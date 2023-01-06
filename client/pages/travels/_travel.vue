@@ -98,7 +98,7 @@ export default {
         {
           hid: 'description',
           name: 'description',
-          content: this.travel.Title + ' journey'
+          content: this.travel.Description
         }
       ]
     }
