@@ -60,33 +60,14 @@
               </div>
               <br>
             </div>
-         
-            <h3 class="font-bold">🌎 Countries of this travel</h3>
-            <ul>
-              <li v-for="country in travel.Countries">
-                - <a :href="`/countries/` + country.Code" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
-                  {{country.Name}}
-                </a>
-              </li> 
-            </ul>
-            <br>
-
-            <h3 class="font-bold">📖 Resources</h3>
-            <div v-for="resource in travel.Resources">
-              <p class="font-meduim">
-                <a :href="resource.Link" target="_blank" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
-                  {{resource.Title}}
-                </a>
-              </p>
-              <div class="relative mx-auto w-60 h-80">
-                <a :href="resource.Link" target="_blank">
-                  <img :src="$config.baseImageURL+resource.Image" :alt="resource.Title" class="relative w-full h-full rounded-md shadow-md">
-                </a>
-              </div>
-              <br>
+ 
+            <div class="flex space-x-2 justify-end">
+              <a :href="`/travels/`+travel.Slug" target="_blank">
+                <button type="button" class="inline-block px-6 py-2.5 bg-blue-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Read More</button>
+              </a>
             </div>
 
-            <div class="mt-4 pt-4 text-gray-800 border-t border-dashed"/>
+            <div v-if="index != travels.length - 1" class="mt-4 pt-4 text-gray-800 border-t border-dashed"/>
           </div>
         </div>
       </div>
