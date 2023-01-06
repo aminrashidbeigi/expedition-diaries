@@ -8,11 +8,7 @@
           {{ travel.Title }}
         </h1>
         <div class="mt-4 pt-4 text-gray-800 border-t border-dashed">
-            <div v-if="travel.Description" class="whitespace-pre-line">
-              <p>
-                {{ travel.Description }}
-              </p>
-            </div> 
+            <div v-if="travel.Description" class="whitespace-pre-line"><p>{{ travel.Description }}</p></div> 
             <br>
 
             <h2 class="font-bold">📅 Duration</h2>

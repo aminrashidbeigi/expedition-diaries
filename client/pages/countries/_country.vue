@@ -17,15 +17,11 @@
               class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
                 here</a>.
           </div>
-          <div v-for="travel in countryTravels.Travels">
+          <div v-for="(travel, index) in countryTravels.Travels">
             <a :href="`/travels/`+travel.Slug" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
               <h2 class="font-bold text-xl">{{travel.Title}}</h2>
             </a>
-            <div v-if="travel.Description" class="whitespace-pre-line">
-              <p>
-                {{ travel.Description }}
-              </p>
-            </div>  
+            <div v-if="travel.Description" class="whitespace-pre-line"><p>{{ travel.Description }}</p></div> 
             <br>
 
             <h2 class="font-bold">📅 Duration</h2>
@@ -67,7 +63,7 @@
               </a>
             </div>
 
-            <div v-if="index != travels.length - 1" class="mt-4 pt-4 text-gray-800 border-t border-dashed"/>
+            <div v-if="index != countryTravels.Travels.length - 1" class="mt-4 pt-4 text-gray-800 border-t border-dashed"/>
           </div>
         </div>
       </div>
