@@ -21,7 +21,7 @@
             <a :href="`/travels/`+travel.Slug" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
               <h2 class="font-bold text-xl">{{travel.Title}}</h2>
             </a>
-            <div v-if="travel.Description">
+            <div v-if="travel.Description" class="whitespace-pre-line">
               <p>
                 {{ travel.Description }}
               </p>
