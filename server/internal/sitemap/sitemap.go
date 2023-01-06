@@ -47,16 +47,6 @@ func (sg *SitemapGenerator) Generate() {
 		log.Fatal("Unable to add SitemapLoc:", err)
 	}
 
-	err = sm.Add(&smg.SitemapLoc{
-		Loc:        "/add-expedition",
-		LastMod:    &now,
-		ChangeFreq: smg.Monthly,
-		Priority:   0.3,
-	})
-	if err != nil {
-		log.Fatal("Unable to add SitemapLoc:", err)
-	}
-
 	ctx := context.Background()
 	travels, err := sg.Storage.GetTravels(ctx, queries.GetTravelsParams{
 		Offset: 0,
@@ -66,17 +56,16 @@ func (sg *SitemapGenerator) Generate() {
 		log.Fatal("can not get travels: ", err)
 	}
 	for _, travel := range travels {
-		resources, err := sg.Storage.GetResourcesByTravelID(ctx, travel.ID)
-		if err != nil {
-			log.Fatal("can not get travel resources: ", err)
-		}
-
 		routeImage := travel.Route
 		var images = []*smg.SitemapImage{}
 		if len(routeImage.String) > 0 {
 			images = append(images, &smg.SitemapImage{ImageLoc: sg.ImagesPrefix + "/" + routeImage.String})
 		}
 
+		resources, err := sg.Storage.GetResourcesByTravelID(ctx, travel.ID)
+		if err != nil {
+			log.Fatal("can not get travel resources: ", err)
+		}
 		for _, resource := range resources {
 			resourceImage := resource.Image
 			if len(resourceImage) != 0 {
@@ -84,11 +73,21 @@ func (sg *SitemapGenerator) Generate() {
 			}
 		}
 
+		travelers, err := sg.Storage.GetTravelersByTravelID(ctx, travel.ID)
+		if err != nil {
+			log.Fatal("can not get travel resources: ", err)
+		}
+		for _, traveler := range travelers {
+			travelerImage := traveler.Image.String
+			if len(travelerImage) != 0 {
+				images = append(images, &smg.SitemapImage{ImageLoc: sg.ImagesPrefix + "/" + travelerImage})
+			}
+		}
 		if len(images) > 0 {
 			err = sm.Add(&smg.SitemapLoc{
 				Loc:        "/travels/" + travel.Slug.String,
 				LastMod:    &now,
-				ChangeFreq: smg.Weekly,
+				ChangeFreq: smg.Monthly,
 				Priority:   0.8,
 				Images:     images,
 			})
@@ -96,7 +95,7 @@ func (sg *SitemapGenerator) Generate() {
 			err = sm.Add(&smg.SitemapLoc{
 				Loc:        "/travels/" + travel.Slug.String,
 				LastMod:    &now,
-				ChangeFreq: smg.Weekly,
+				ChangeFreq: smg.Monthly,
 				Priority:   0.8,
 			})
 		}
@@ -115,7 +114,7 @@ func (sg *SitemapGenerator) Generate() {
 		err := sm.Add(&smg.SitemapLoc{
 			Loc:        "/countries/" + country.Code,
 			LastMod:    &now,
-			ChangeFreq: smg.Daily,
+			ChangeFreq: smg.Weekly,
 			Priority:   0.7,
 		})
 		if err != nil {
