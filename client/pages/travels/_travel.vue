@@ -12,17 +12,16 @@
               <p>
                 {{ travel.Description }}
               </p>
-            
             </div> 
             <br>
 
-            <h3 class="font-bold">📅 Duration</h3>
+            <h2 class="font-bold">📅 Duration</h2>
             <div>
               <p>From {{travel.StartedAt? travel.StartedAt : "?"}} to {{travel.EndedAt? travel.EndedAt : "?"}}</p>
             </div>
             <br>
           
-            <h3 class="font-bold">🤠 Travelers</h3>
+            <h2 class="font-bold">🤠 Explorers</h2>
             <div v-for="traveler in travel.Travelers">
               <p v-if="traveler.Link">
                 - <a :href="traveler.Link" target="_blank" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
@@ -39,7 +38,7 @@
             <br>
         
             <div v-if="travel.Route">
-              <h3 class="font-bold">📍 Route</h3>
+              <h2 class="font-bold">📍 Route</h2>
               <div class="relative mx-auto w-80">
                 <a :href="$config.baseImageURL+travel.Route" target="_blank">
                   <img :src="$config.baseImageURL+travel.Route" :alt="travel.Title + ' expedition route'" class="relative w-full h-full rounded-md shadow-md">
@@ -48,7 +47,7 @@
               <br>
             </div>
          
-            <h3 class="font-bold">🌎 Countries of this travel</h3>
+            <h2 class="font-bold">🌎 Countries of this travel</h2>
             <ul>
               <li v-for="country in travel.Countries">
                 - <a :href="`/countries/` + country.Code" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
@@ -58,7 +57,7 @@
             </ul>
             <br>
 
-            <h3 class="font-bold">📖 Resources</h3>
+            <h2 class="font-bold">📖 Resources</h2>
             <div v-for="resource in travel.Resources">
               <p class="font-meduim">
                 <a :href="resource.Link" target="_blank" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
