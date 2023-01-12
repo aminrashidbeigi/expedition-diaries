@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/aminrashidbeigi/expedition-diaries/internal/constants"
 	"github.com/aminrashidbeigi/expedition-diaries/internal/sitemap"
 	"github.com/aminrashidbeigi/expedition-diaries/storage"
 	"github.com/aminrashidbeigi/expedition-diaries/storage/queries"
@@ -148,25 +149,30 @@ func (r Router) GetTravelBySlug(c *gin.Context) {
 	}
 	travelRecords, err := r.Queries.GetTravelBySlug(c, sql.NullString{String: slug, Valid: true})
 	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, constants.ERR_READING_FROM_DATABASE)
 		return
 	}
 	if len(travelRecords) == 0 {
+		c.IndentedJSON(http.StatusNotFound, constants.ERR_EXPEDITION_NOT_FOUND)
 		return
 	}
 	travelRecord := travelRecords[0]
 
 	travelers, err := r.Queries.GetTravelersByTravelID(c, travelRecord.ID)
 	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, constants.ERR_READING_FROM_DATABASE)
 		return
 	}
 
 	resources, err := r.Queries.GetResourcesByTravelID(c, travelRecord.ID)
 	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, constants.ERR_READING_FROM_DATABASE)
 		return
 	}
 
 	countries, err := r.Queries.GetCountriesByTravelID(c, travelRecord.ID)
 	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, constants.ERR_READING_FROM_DATABASE)
 		return
 	}
 
@@ -205,23 +211,27 @@ func (r Router) GetTravels(c *gin.Context) {
 		Offset: offset,
 		Limit:  limit,
 	})
-
 	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, constants.ERR_READING_FROM_DATABASE)
 		return
 	}
+
 	for _, travel := range travelsRecords {
 		travelers, err := r.Queries.GetTravelersByTravelID(c, travel.ID)
 		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, constants.ERR_READING_FROM_DATABASE)
 			return
 		}
 
 		resources, err := r.Queries.GetResourcesByTravelID(c, travel.ID)
 		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, constants.ERR_READING_FROM_DATABASE)
 			return
 		}
 
 		countries, err := r.Queries.GetCountriesByTravelID(c, travel.ID)
 		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, constants.ERR_READING_FROM_DATABASE)
 			return
 		}
 
@@ -244,8 +254,7 @@ func (r Router) GetTravels(c *gin.Context) {
 func (r Router) GetCountries(c *gin.Context) {
 	countries, err := r.Queries.GetCountries(c)
 	if err != nil {
-		log.Println("this is error: ", err)
-		c.IndentedJSON(http.StatusInternalServerError, "something bad happend.")
+		c.IndentedJSON(http.StatusInternalServerError, constants.ERR_READING_FROM_DATABASE)
 		return
 	}
 	c.IndentedJSON(http.StatusOK, countries)
@@ -264,10 +273,8 @@ func (r Router) AddTraveler(c *gin.Context) {
 		Image:       sql.NullString{String: input.Image, Valid: true},
 		Nationality: sql.NullString{String: input.Nationality, Valid: true},
 	})
-
 	if err != nil {
-		log.Println("this is error: ", err)
-		c.IndentedJSON(http.StatusInternalServerError, "could not create traveler.")
+		c.IndentedJSON(http.StatusInternalServerError, constants.ERR_READING_FROM_DATABASE)
 		return
 	}
 	c.IndentedJSON(http.StatusCreated, traveler)
@@ -287,9 +294,7 @@ func (r Router) AddResource(c *gin.Context) {
 		Language: sql.NullString{String: input.Language, Valid: true},
 		Type:     sql.NullString{String: input.Type, Valid: true},
 	})
-
 	if err != nil {
-		log.Println("this is error: ", err)
 		c.IndentedJSON(http.StatusInternalServerError, "could not create resource.")
 		return
 	}
@@ -323,7 +328,6 @@ func (r Router) AddTravel(c *gin.Context) {
 			Slug:        sql.NullString{String: input.Slug, Valid: true},
 		})
 		if err != nil && !storage.IsNoRowError(err) {
-			log.Println("this is error: ", err)
 			c.IndentedJSON(http.StatusInternalServerError, "could not create travel.")
 			return
 		}
@@ -340,7 +344,6 @@ func (r Router) AddTravel(c *gin.Context) {
 			CountryID: country.ID,
 		})
 		if err != nil && !storage.IsNoRowError(err) {
-			log.Println("this is error: ", err)
 			c.IndentedJSON(http.StatusInternalServerError, "could not get country by id.")
 			return
 		}
@@ -352,7 +355,6 @@ func (r Router) AddTravel(c *gin.Context) {
 			ResourceID: int32(resourceInput),
 		})
 		if err != nil && !storage.IsNoRowError(err) {
-			log.Println("this is error: ", err)
 			c.IndentedJSON(http.StatusInternalServerError, "could not get resource by id.")
 			return
 		}
@@ -364,7 +366,6 @@ func (r Router) AddTravel(c *gin.Context) {
 			TravelerID: int32(travelerInput),
 		})
 		if err != nil && !storage.IsNoRowError(err) {
-			log.Println("this is error: ", err)
 			c.IndentedJSON(http.StatusInternalServerError, "could not get traveler by id.")
 			return
 		}

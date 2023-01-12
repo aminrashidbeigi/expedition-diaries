@@ -102,8 +102,16 @@ export default {
     Header,
     Footer,
   },
-  async asyncData({ params, $axios }) {
-    const travel = await $axios.$get(process.env.baseAPI + '/travels/' + params.travel)
+  
+  async asyncData({ params, error, $axios }) {
+    let travel = null;
+    try{
+      travel = await $axios.$get(process.env.baseAPI + '/travels/' + params.travel)
+    } catch (err) {
+      if (err.response){
+        error({statusCode: err.response.status, message: err.response.data})
+      }
+    }
     return { travel }
   },
 }
