@@ -371,6 +371,7 @@ func (r Router) AddTravel(c *gin.Context) {
 		}
 	}
 
+	r.SitemapGenerator.Generate()
 	c.IndentedJSON(http.StatusCreated, travel)
 }
 
