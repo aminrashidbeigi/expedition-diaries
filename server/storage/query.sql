@@ -17,7 +17,8 @@ RETURNING *;
 SELECT * FROM travels
 INNER JOIN travel_countries on travels.id = travel_countries.travel_id
 INNER JOIN countries on travel_countries.country_id = countries.id
-WHERE countries.code = $1;
+WHERE countries.code = $1
+ORDER BY travels.id DESC;
 
 
 -- name: GetCountriesByTravelID :many
