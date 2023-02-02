@@ -6,7 +6,7 @@
         <div class="text-center font-semibold text-slate-200">
             <a href="/" class="mr-5">Home</a>
             <a href="/map" class="mr-5">Map</a>
-            <a href="/add-expedition" class="mr-5">Suggest an expedition</a>
+            <a href="/explorers" class="mr-5">Explorers</a>
         </div>
    </div>
 </template>

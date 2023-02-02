@@ -1,0 +1,1 @@
+ALTER TABLE travelers ADD COLUMN slug text;

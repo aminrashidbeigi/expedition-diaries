@@ -105,6 +105,23 @@ func (sg *SitemapGenerator) Generate() {
 		}
 	}
 
+	travelers, err := sg.Storage.GetTravelers(ctx)
+	if err != nil {
+		log.Fatal("can not get countries: ", err)
+	}
+
+	for _, traveler := range travelers {
+		err := sm.Add(&smg.SitemapLoc{
+			Loc:        "/explorers/" + traveler.Slug.String,
+			LastMod:    &now,
+			ChangeFreq: smg.Weekly,
+			Priority:   0.8,
+		})
+		if err != nil {
+			log.Fatal("Unable to add SitemapLoc:", err)
+		}
+	}
+
 	countries, err := sg.Storage.GetCountries(ctx)
 	if err != nil {
 		log.Fatal("can not get countries: ", err)

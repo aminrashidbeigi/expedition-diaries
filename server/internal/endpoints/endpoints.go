@@ -3,7 +3,6 @@ package endpoints
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -54,6 +53,7 @@ type Country struct {
 
 type Traveler struct {
 	Name        string
+	Slug        string
 	Link        string
 	Image       string
 	Nationality string
@@ -88,7 +88,6 @@ func (r Router) GetCountryTravelsByCode(c *gin.Context) {
 	code := c.Param("code")
 	code = strings.ToLower(code)
 	if len(code) != 2 {
-		log.Println("Bad request")
 		c.IndentedJSON(http.StatusBadRequest, "Country code not found. it should be 2 letters.")
 		return
 	}
@@ -380,6 +379,76 @@ func (r Router) GenerateSitemap(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, "Sitemap generated successfuly")
 }
 
+func (r Router) GetTravelers(c *gin.Context) {
+	travelers, err := r.Queries.GetTravelers(c)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, constants.ERR_READING_FROM_DATABASE)
+		return
+	}
+	c.IndentedJSON(http.StatusOK, travelers)
+}
+
+func (r Router) GetTravelerBySlug(c *gin.Context) {
+	slug := c.Param("slug")
+	if slug == "" {
+		c.IndentedJSON(http.StatusBadRequest, "slug should not be empty.")
+		return
+	}
+
+	traveler, err := r.Queries.GetTravelerBySlug(c, slug)
+	if err != nil {
+		c.IndentedJSON(http.StatusNotFound, "Traveler slug not found.")
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, traveler)
+}
+
+func (r Router) GetTravelerTravelsBySlug(c *gin.Context) {
+	slug := c.Param("slug")
+	if slug == "" {
+		c.IndentedJSON(http.StatusBadRequest, "slug should not be empty.")
+		return
+	}
+
+	travelerTravels, err := r.Queries.GetTravelsByTravelerSlug(c, slug)
+	if err != nil {
+		c.IndentedJSON(http.StatusNotFound, "Traveler slug not found.")
+		return
+	}
+
+	var travels []Travel
+	for _, travel := range travelerTravels {
+		travelers, err := r.Queries.GetTravelersByTravelID(c, travel.ID)
+		if err != nil {
+			return
+		}
+
+		resources, err := r.Queries.GetResourcesByTravelID(c, travel.ID)
+		if err != nil {
+			return
+		}
+
+		countries, err := r.Queries.GetCountriesByTravelID(c, travel.ID)
+		if err != nil {
+			return
+		}
+
+		travels = append(travels, Travel{
+			Title:       travel.Title,
+			Description: travel.Description.String,
+			Slug:        travel.Slug.String,
+			StartedAt:   travel.StartedAt,
+			EndedAt:     travel.EndedAt,
+			Route:       travel.Route.String,
+			Resources:   resourcesRecordToResourceType(resources),
+			Travelers:   travelersRecordToTravelerType(travelers),
+			Countries:   countriesRecordToCountryType(countries),
+		})
+	}
+
+	c.IndentedJSON(http.StatusOK, travels)
+}
 func resourcesRecordToResourceType(resourcesRecords []queries.GetResourcesByTravelIDRow) []Resource {
 	var resources []Resource
 	for _, resourceRecord := range resourcesRecords {

@@ -100,3 +100,17 @@ SELECT * FROM travels ORDER BY id DESC LIMIT $1 OFFSET $2;
 
 -- name: GetTravelBySlug :many
 SELECT * FROM travels WHERE slug=$1 LIMIT 1;
+
+
+-- name: GetTravelers :many
+SELECT * FROM travelers ORDER BY id DESC;
+
+-- name: GetTravelsByTravelerSlug :many
+SELECT * FROM travels
+INNER JOIN travel_travelers on travels.id = travel_travelers.travel_id
+INNER JOIN travelers on travel_travelers.traveler_id = travelers.id
+WHERE travelers.slug = @slug::text
+ORDER BY travels.id DESC;
+
+-- name: GetTravelerBySlug :one
+SELECT * FROM travelers WHERE slug = @slug::text LIMIT 1;

@@ -54,4 +54,5 @@ type Traveler struct {
 	Link        string
 	Image       sql.NullString
 	Nationality sql.NullString
+	Slug        sql.NullString
 }

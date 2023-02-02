@@ -177,7 +177,7 @@ INSERT INTO travelers (
 ) VALUES (
   $1, $2, $3, $4
 )
-RETURNING id, name, link, image, nationality
+RETURNING id, name, link, image, nationality, slug
 `
 
 type CreateTravelerParams struct {
@@ -201,6 +201,7 @@ func (q *Queries) CreateTraveler(ctx context.Context, arg CreateTravelerParams) 
 		&i.Link,
 		&i.Image,
 		&i.Nationality,
+		&i.Slug,
 	)
 	return i, err
 }
@@ -421,8 +422,60 @@ func (q *Queries) GetTravelByTitle(ctx context.Context, title string) (Travel, e
 	return i, err
 }
 
+const getTravelerBySlug = `-- name: GetTravelerBySlug :one
+SELECT id, name, link, image, nationality, slug FROM travelers WHERE slug = $1::text LIMIT 1
+`
+
+func (q *Queries) GetTravelerBySlug(ctx context.Context, slug string) (Traveler, error) {
+	row := q.db.QueryRowContext(ctx, getTravelerBySlug, slug)
+	var i Traveler
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Link,
+		&i.Image,
+		&i.Nationality,
+		&i.Slug,
+	)
+	return i, err
+}
+
+const getTravelers = `-- name: GetTravelers :many
+SELECT id, name, link, image, nationality, slug FROM travelers ORDER BY id DESC
+`
+
+func (q *Queries) GetTravelers(ctx context.Context) ([]Traveler, error) {
+	rows, err := q.db.QueryContext(ctx, getTravelers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Traveler
+	for rows.Next() {
+		var i Traveler
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Link,
+			&i.Image,
+			&i.Nationality,
+			&i.Slug,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getTravelersByTravelID = `-- name: GetTravelersByTravelID :many
-SELECT travelers.id, name, link, image, nationality, travel_id, traveler_id, travels.id, title, started_at, ended_at, route, slug, description FROM travelers
+SELECT travelers.id, name, link, image, nationality, travelers.slug, travel_id, traveler_id, travels.id, title, started_at, ended_at, route, travels.slug, description FROM travelers
 INNER JOIN travel_travelers on travelers.id = travel_travelers.traveler_id
 INNER JOIN travels on travel_travelers.travel_id = travels.id
 WHERE travels.id = $1
@@ -434,6 +487,7 @@ type GetTravelersByTravelIDRow struct {
 	Link        string
 	Image       sql.NullString
 	Nationality sql.NullString
+	Slug        sql.NullString
 	TravelID    int32
 	TravelerID  int32
 	ID_2        int32
@@ -441,7 +495,7 @@ type GetTravelersByTravelIDRow struct {
 	StartedAt   string
 	EndedAt     string
 	Route       sql.NullString
-	Slug        sql.NullString
+	Slug_2      sql.NullString
 	Description sql.NullString
 }
 
@@ -460,6 +514,7 @@ func (q *Queries) GetTravelersByTravelID(ctx context.Context, id int32) ([]GetTr
 			&i.Link,
 			&i.Image,
 			&i.Nationality,
+			&i.Slug,
 			&i.TravelID,
 			&i.TravelerID,
 			&i.ID_2,
@@ -467,7 +522,7 @@ func (q *Queries) GetTravelersByTravelID(ctx context.Context, id int32) ([]GetTr
 			&i.StartedAt,
 			&i.EndedAt,
 			&i.Route,
-			&i.Slug,
+			&i.Slug_2,
 			&i.Description,
 		); err != nil {
 			return nil, err
@@ -509,6 +564,71 @@ func (q *Queries) GetTravels(ctx context.Context, arg GetTravelsParams) ([]Trave
 			&i.Route,
 			&i.Slug,
 			&i.Description,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getTravelsByTravelerSlug = `-- name: GetTravelsByTravelerSlug :many
+SELECT travels.id, title, started_at, ended_at, route, travels.slug, description, travel_id, traveler_id, travelers.id, name, link, image, nationality, travelers.slug FROM travels
+INNER JOIN travel_travelers on travels.id = travel_travelers.travel_id
+INNER JOIN travelers on travel_travelers.traveler_id = travelers.id
+WHERE travelers.slug = $1::text
+ORDER BY travels.id DESC
+`
+
+type GetTravelsByTravelerSlugRow struct {
+	ID          int32
+	Title       string
+	StartedAt   string
+	EndedAt     string
+	Route       sql.NullString
+	Slug        sql.NullString
+	Description sql.NullString
+	TravelID    int32
+	TravelerID  int32
+	ID_2        int32
+	Name        string
+	Link        string
+	Image       sql.NullString
+	Nationality sql.NullString
+	Slug_2      sql.NullString
+}
+
+func (q *Queries) GetTravelsByTravelerSlug(ctx context.Context, slug string) ([]GetTravelsByTravelerSlugRow, error) {
+	rows, err := q.db.QueryContext(ctx, getTravelsByTravelerSlug, slug)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetTravelsByTravelerSlugRow
+	for rows.Next() {
+		var i GetTravelsByTravelerSlugRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.StartedAt,
+			&i.EndedAt,
+			&i.Route,
+			&i.Slug,
+			&i.Description,
+			&i.TravelID,
+			&i.TravelerID,
+			&i.ID_2,
+			&i.Name,
+			&i.Link,
+			&i.Image,
+			&i.Nationality,
+			&i.Slug_2,
 		); err != nil {
 			return nil, err
 		}
