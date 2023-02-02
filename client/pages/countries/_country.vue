@@ -18,50 +18,16 @@
                 here</a>.
           </div>
           <div v-for="(travel, index) in countryTravels.Travels">
-            <a :href="`/travels/`+travel.Slug" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
-              <h2 class="font-bold text-xl">{{travel.Title}}</h2>
-            </a>
-            <div v-if="travel.Description" class="whitespace-pre-line"><p>{{ travel.Description }}</p></div> 
-            <br>
 
-            <h2 class="font-bold">📅 Duration</h2>
-            <div>
-              <p>From {{travel.StartedAt? travel.StartedAt : "?"}} A.D. to {{travel.EndedAt? travel.EndedAt : "?"}} A.D.</p>
-            </div>
-            <br>
-            
-          
-            <h2 class="font-bold">🤠 Explorers</h2>
-            <div v-for="traveler in travel.Travelers">
-              <p v-if="traveler.Link">
-                - <a :href="traveler.Link" target="_blank" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
-                  {{traveler.Name}}
-                </a>
-              </p>
-              <p v-else>
-                - {{traveler.Name}}
-              </p>
-              <div v-if="traveler.Image" class="relative mx-auto w-80">
-                <img :src="$config.baseImageURL+traveler.Image" :alt="traveler.Name + ' image'" class="relative w-full h-full rounded-md shadow-md">
-              </div>
-            </div>
-            <br>
-        
-            <div v-if="travel.Route">
-              <h2 class="font-bold">📍 Route</h2>
-              <div class="relative mx-auto w-80">
-                <a :href="$config.baseImageURL+travel.Route" target="_blank">
-                  <img :src="$config.baseImageURL+travel.Route" :alt="travel.Title + ' expedition route'" class="relative w-full h-full rounded-md shadow-md">
-                </a>
-              </div>
-              <br>
-            </div>
- 
-            <div class="flex space-x-2 justify-end">
-              <a :href="`/travels/`+travel.Slug" target="_blank">
-                <button type="button" class="inline-block px-6 py-2.5 bg-blue-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Read More</button>
-              </a>
-            </div>
+            <ExpeditionPreview
+              :title="travel.Title"
+              :description="travel.Description"
+              :route="travel.Route"
+              :startedAt="travel.StartedAt"
+              :endedAt="travel.EndedAt"
+              :explorers="travel.Travelers"
+              :slug="travel.Slug"
+            ></ExpeditionPreview>
 
             <div v-if="index != countryTravels.Travels.length - 1" class="mt-4 pt-4 text-gray-800 border-t border-dashed"/>
           </div>
