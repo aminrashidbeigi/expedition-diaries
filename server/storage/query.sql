@@ -46,9 +46,9 @@ WHERE travels.id = $1;
 
 -- name: CreateTraveler :one
 INSERT INTO travelers (
-  name, link, image, nationality
+  name, link, image, nationality, slug
 ) VALUES (
-  $1, $2, $3, $4
+  $1, $2, $3, $4, $5
 )
 RETURNING *;
 

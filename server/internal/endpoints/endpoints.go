@@ -33,6 +33,7 @@ type AddTravelInput struct {
 
 type AddTravelerInput struct {
 	Name        string `json:"name" binding:"required"`
+	Slug        string `json:"slug" binding:"required"`
 	Link        string `json:"link"`
 	Image       string `json:"image"`
 	Nationality string `json:"nationality"`
@@ -268,6 +269,7 @@ func (r Router) AddTraveler(c *gin.Context) {
 
 	traveler, err := r.Queries.CreateTraveler(c, queries.CreateTravelerParams{
 		Name:        input.Name,
+		Slug:        sql.NullString{String: input.Slug, Valid: true},
 		Link:        input.Link,
 		Image:       sql.NullString{String: input.Image, Valid: true},
 		Nationality: sql.NullString{String: input.Nationality, Valid: true},

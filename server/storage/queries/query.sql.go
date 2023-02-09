@@ -173,9 +173,9 @@ func (q *Queries) CreateTravelTraveler(ctx context.Context, arg CreateTravelTrav
 
 const createTraveler = `-- name: CreateTraveler :one
 INSERT INTO travelers (
-  name, link, image, nationality
+  name, link, image, nationality, slug
 ) VALUES (
-  $1, $2, $3, $4
+  $1, $2, $3, $4, $5
 )
 RETURNING id, name, link, image, nationality, slug
 `
@@ -185,6 +185,7 @@ type CreateTravelerParams struct {
 	Link        string
 	Image       sql.NullString
 	Nationality sql.NullString
+	Slug        sql.NullString
 }
 
 func (q *Queries) CreateTraveler(ctx context.Context, arg CreateTravelerParams) (Traveler, error) {
@@ -193,6 +194,7 @@ func (q *Queries) CreateTraveler(ctx context.Context, arg CreateTravelerParams) 
 		arg.Link,
 		arg.Image,
 		arg.Nationality,
+		arg.Slug,
 	)
 	var i Traveler
 	err := row.Scan(
