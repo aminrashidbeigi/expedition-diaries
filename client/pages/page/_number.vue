@@ -33,14 +33,14 @@
             <div v-if="index != travels.length - 1" class="mt-4 pt-4 text-gray-800 border-t border-dashed"/>
           </div>
 
-          <section id="prev-next">
+          <!-- <section id="prev-next">
             <nuxt-link :to="prevLink">
               <button type="button" class="inline-block px-6 py-2.5 bg-blue-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Prev Page</button>
             </nuxt-link>
             <nuxt-link v-if="nextPage" :to="`/page/${pageNumber + 1}`">
               <button type="button" class="inline-block px-6 py-2.5 bg-blue-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Next Page</button>
             </nuxt-link>
-          </section>
+          </section> -->
         </div>
       </div>
       <Footer/>
@@ -80,9 +80,9 @@ export default {
   },
   async asyncData({ params, $axios }) {
     const pageNumber = parseInt(params.number)
-    const travels = await $axios.$get(process.env.baseAPI + '/travels?limit=2&offset=' + pageNumber)
+    const travels = await $axios.$get(process.env.baseAPI + '/travels?limit=10&offset=' + pageNumber)
     
-    const nextPage = travels.length === 2
+    const nextPage = travels.length === 10
     return { nextPage, travels, pageNumber }
   },
   computed: {

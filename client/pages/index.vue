@@ -34,9 +34,9 @@
           </div>
 
 
-          <nuxt-link to="/page/2">
+          <!-- <nuxt-link to="/page/2">
             <button type="button" class="inline-block px-6 py-2.5 bg-blue-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Next Page</button>
-          </nuxt-link>
+          </nuxt-link> -->
 
         </div>
       </div>
@@ -75,9 +75,9 @@ export default {
     ExpeditionPreview,
   },
   async asyncData({ $axios }) {
-    const travels = await $axios.$get(process.env.baseAPI + '/travels?limit=2&offset=0')
+    const travels = await $axios.$get(process.env.baseAPI + '/travels?limit=10&offset=0')
     
-    const nextPage = travels.length === 2
+    const nextPage = travels.length === 10
     return { nextPage, travels }
   },
 
